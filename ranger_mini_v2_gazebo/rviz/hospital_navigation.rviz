@@ -1,0 +1,157 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Tool Properties
+    Name: Tool Properties
+  - Class: rviz/Views
+    Name: Views
+  - Class: rviz/Time
+    Name: Time
+  - Class: rviz/Image
+    Name: Camera Image
+    Image Topic: /front/image_raw
+    Enabled: true
+    Queue Size: 2
+    Normalize Range: true
+    Value: true
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz/Grid
+      Name: Grid
+      Enabled: true
+      Plane: XY
+      Cell Size: 1
+      Plane Cell Count: 10
+      Color: 160; 160; 164
+    - Class: rviz/TF
+      Name: TF
+      Enabled: true
+      Show Arrows: false
+      Show Axes: false
+      Show Names: false
+    - Class: rviz/RobotModel
+      Name: RobotModel
+      Enabled: true
+      Robot Description: robot_description
+      Visual Enabled: true
+      Collision Enabled: false
+      Links:
+        All Links Enabled: true
+        base_link:
+          Show Axes: true
+        fl_wheel_link:
+          Show Axes: true
+        fr_wheel_link:
+          Show Axes: true
+        rl_wheel_link:
+          Show Axes: true
+        rr_wheel_link:
+          Show Axes: true
+        mid_vlp16:
+          Show Axes: true
+        front_camera:
+          Show Axes: true
+    - Class: rviz/LaserScan
+      Name: LaserScan
+      Enabled: true
+      Topic: /front/scan
+      Queue Size: 10
+      Color: 255; 255; 255
+      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.05
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz/PointCloud2
+      Name: PointCloud2
+      Enabled: true
+      Topic: /mid/points
+      Queue Size: 10
+      Color: 255; 255; 255
+      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.02
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz/Map
+      Name: Map
+      Enabled: true
+      Topic: /map
+      Alpha: 0.7
+      Color Scheme: map
+      Draw Behind: true
+      Use Timestamp: false
+      Value: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: base_link
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Topic: /initialpose
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 6
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Name: Current View
+      Near Clip Distance: 0.01
+      Pitch: 0.6
+      Target Frame: base_link
+      Yaw: 3.15
+      Value: Orbit (rviz)
+Window Geometry:
+  Height: 900
+  Width: 1600
+  X: 100
+  Y: 100
+  Camera Image:
+    collapsed: false
+    geometry:
+      x: 10
+      y: 10
+      width: 400
+      height: 120
+  Displays:
+    collapsed: false
+    geometry:
+      x: 10
+      y: 140
+      width: 400
+      height: 600
+  Tool Properties:
+    collapsed: false
+    geometry:
+      x: 420
+      y: 10
+      width: 300
+      height: 200
+  Views:
+    collapsed: false
+    geometry:
+      x: 420
+      y: 220
+      width: 300
+      height: 200
+  Time:
+    collapsed: false
+    geometry:
+      x: 420
+      y: 430
+      width: 300
+      height: 100 

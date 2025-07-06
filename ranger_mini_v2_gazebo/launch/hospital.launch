@@ -36,8 +36,12 @@
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-  		args="-urdf -model ranger_mini_v2 -param robot_description -x 0.0 -y 0.0 -z 0.3 -R 0.0 -P 0.0 -Y 0.0"/>
+  		args="-urdf -model ranger_mini_v2 -param robot_description -x 0.5 -y 0.5 -z 0.3 -R 0.0 -P 0.0 -Y 0.0"/>
 
   <!-- ros_control motoman launch file -->
   <include file="$(find ranger_mini_control)/launch/robot_control_v2.launch"/>
+
+  <!-- Launch RViz with navigation-style config -->
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find ranger_mini_v2_gazebo)/rviz/hospital_navigation.rviz" />
 </launch>

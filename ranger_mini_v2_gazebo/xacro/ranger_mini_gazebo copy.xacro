@@ -3,17 +3,6 @@
 <robot name="ranger_mini_v2" 
     xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <!-- Material definitions -->
-    <material name="black">
-        <color rgba="0.1 0.1 0.1 1" />
-    </material>
-    <material name="white">
-        <color rgba="1 1 1 1" />
-    </material>
-    <material name="dark_grey">
-        <color rgba="0.3 0.3 0.3 1" />
-    </material>
-
     <!-- <xacro:include filename="$(find ranger_mini_v2)/urdf/ranger_l.xacro" />
     <xacro:include filename="$(find ranger_mini_v2)/urdf/ranger_r.xacro" /> -->
 
@@ -391,7 +380,5 @@
     </plugin>
   </gazebo>
 
-  <!-- Include accessories (3D LiDAR and camera) -->
-  <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories.urdf.xacro" />
 
 </robot>

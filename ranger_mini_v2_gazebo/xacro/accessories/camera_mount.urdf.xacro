@@ -1,0 +1,60 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="camera_mount" params="prefix parent_link *origin">
+    <!-- Supplement sits directly on base, no gap -->
+    <link name="${prefix}_camera_supplement">
+      <visual>
+        <origin xyz="0 0 0.0" rpy="0 0 0" /> <!-- shift up by half thickness -->
+        <geometry>
+          <box size="0.01 0.02 0.02" /> <!-- 2cm thick -->
+        </geometry>
+        <material name="dark_grey" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.01" rpy="0 0 0" />
+        <geometry>
+          <box size="0.04 0.02 0.02" />
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Camera sits directly on top of supplement -->
+    <link name="${prefix}_camera">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.03 0.02 0.02" />
+        </geometry>
+        <material name="black" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.01 0.02" />
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Attach supplement to parent (base) -->
+    <joint name="${prefix}_camera_supplement_joint" type="fixed">
+      <parent link="${parent_link}" />
+      <child link="${prefix}_camera_supplement" />
+      <xacro:insert_block name="origin" />
+    </joint>
+
+    <!-- Attach camera to supplement (on top, no gap) -->
+    <joint name="${prefix}_camera_joint" type="fixed">
+      <parent link="${prefix}_camera_supplement" />
+      <child link="${prefix}_camera" />
+      <origin xyz="0 0 0.02" rpy="0 0 0" /> <!-- Place camera bottom at top of 2cm supplement -->
+    </joint>
+
+    <gazebo reference="${prefix}_camera_supplement">
+      <material>Gazebo/DarkGrey</material>
+    </gazebo>
+    <gazebo reference="${prefix}_camera">
+      <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+
+</robot>
