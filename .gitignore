@@ -1,0 +1,125 @@
+# ROS build artifacts
+build/
+devel/
+install/
+logs/
+
+# Catkin build artifacts
+catkin_ws/devel/
+catkin_ws/build/
+catkin_ws/install/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ROS specific
+*.bag
+*.bag.active
+*.bag.bak
+*.bag.info
+*.bag.index
+*.bag.orig.active
+
+# Log files
+*.log
+*.out
+*.err
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic Libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static Libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Package specific
+*.zip
+*.tar.gz
+*.tar.bz2
+
+# System files
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ROS message generation
+msg_gen/
+srv_gen/
+msg/
+srv/
+action/
+
+# Gazebo specific
+*.world.bak
+*.sdf.bak
+*.urdf.bak
+
+# URDF/SDF backup files
+*.urdf~
+*.sdf~
+*.xacro~
+
+# Launch file backups
+*.launch~
+
+# Config file backups
+*.yaml~
+*.yml~
+*.cfg~
+
+# Ignore large mesh file
+ranger_mini_v2/meshes/ranger_base.dae
+
+/aws-robomaker-hospital-world/
+/cooperative_agent/
