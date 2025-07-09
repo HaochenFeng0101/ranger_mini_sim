@@ -1,26 +1,50 @@
 <?xml version="1.0"?>
 <launch>
+  <!-- Define arguments -->
+  <arg name="gui" default="true"/>
+  
   <!-- Launch Gazebo with empty world -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="worlds/empty.world"/>
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="true"/>
     <arg name="headless" value="false"/>
     <arg name="debug" value="false"/>
+  </include> -->
+  <include file="$(find aws_robomaker_hospital_world)/launch/hospital.launch">
+    <!-- <arg name="world_name" value="$(find robot_launch)/worlds/stage.world"/> -->
+    <!-- <arg name="debug" value="$(arg debug)" /> -->
+    <arg name="gui" value="$(arg gui)" />
+    <!-- <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/> -->
   </include>
 
-  <!-- Load the bed table URDF -->
-  <param
-    name="robot_description"
-    command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/bed_table.urdf.xacro'" />
+  <!-- Load robot description with correct parameter name -->
+  <param name="robot_description" 
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
 
-  <!-- Spawn the bed table in Gazebo -->
-  <node
-    name="spawn_bed_table"
-    pkg="gazebo_ros"
-    type="spawn_model"
-    args="-urdf -param robot_description -model bed_table -x 0 -y 0 -z 0.4"
-    output="screen" />
+  <!-- Spawn Bed Trolley Robot -->
+  <node name="spawn_bed_trolly" pkg="gazebo_ros" type="spawn_model" 
+        args="-param robot_description -urdf -model ranger_mini_bed_trolly -x 0 -y 2 -z 4.0"
+        output="screen" />
+
+  <!-- Robot State Publisher for bed trolley -->
+  <node name="bed_trolley_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
+        respawn="false" output="screen">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+
+  <!-- Joint State Publisher for bed trolley -->
+  <node name="bed_trolley_joint_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="false"/>
+  </node>
+
+  <!-- ros_control motoman launch file -->
+  <include file="$(find ranger_mini_control)/launch/robot_control_v2.launch"/>
+  
+  <!-- RViz with hospital navigation configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ranger_mini_v2_gazebo)/rviz/hospital_navigation.rviz" />
 
 </launch> 

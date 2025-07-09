@@ -3,7 +3,13 @@
     name="model" />
   <param
     name="robot_description"
-    command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_gazebo.xacro'" />
+    command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
+
+    <!-- ranger_mini_xray_detector -->
+    <!-- ranger_mini_bed_trolly
+    ranger_mini_xray_source
+    ranger_mini_xray_detector -->
+   
   <node
     name="joint_state_publisher_gui"
     pkg="joint_state_publisher_gui"

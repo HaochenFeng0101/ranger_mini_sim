@@ -490,11 +490,6 @@
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    </plugin>
-  </gazebo>
-
   <gazebo reference="detector_board">
     <material>Gazebo/Blue</material>
   </gazebo>
@@ -507,5 +502,10 @@
 
   <!-- Include accessories (3D LiDAR and camera) -->
   <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories_detector.urdf.xacro" />
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    </plugin>
+  </gazebo>
 
 </robot> 

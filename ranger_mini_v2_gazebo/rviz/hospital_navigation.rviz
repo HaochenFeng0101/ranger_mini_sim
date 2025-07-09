@@ -7,13 +7,6 @@ Panels:
     Name: Views
   - Class: rviz/Time
     Name: Time
-  - Class: rviz/Image
-    Name: Camera Image
-    Image Topic: /front/image_raw
-    Enabled: true
-    Queue Size: 2
-    Normalize Range: true
-    Value: true
 Visualization Manager:
   Class: ""
   Displays:
@@ -48,25 +41,18 @@ Visualization Manager:
           Show Axes: true
         rr_wheel_link:
           Show Axes: true
-        mid_vlp16:
+        bed_support_link:
           Show Axes: true
-        front_camera:
+        bed_frame_link:
           Show Axes: true
-    - Class: rviz/LaserScan
-      Name: LaserScan
-      Enabled: true
-      Topic: /front/scan
-      Queue Size: 10
-      Color: 255; 255; 255
-      Style: Points
-      Size (Pixels): 3
-      Size (m): 0.05
-      Use Fixed Frame: true
-      Value: true
+        bed_mattress_link:
+          Show Axes: true
+        bed_headboard_link:
+          Show Axes: true
     - Class: rviz/PointCloud2
       Name: PointCloud2
       Enabled: true
-      Topic: /mid/points
+      Topic: /bed_points
       Queue Size: 10
       Color: 255; 255; 255
       Style: Points
@@ -120,18 +106,11 @@ Window Geometry:
   Width: 1600
   X: 100
   Y: 100
-  Camera Image:
-    collapsed: false
-    geometry:
-      x: 10
-      y: 10
-      width: 400
-      height: 120
   Displays:
     collapsed: false
     geometry:
       x: 10
-      y: 140
+      y: 10
       width: 400
       height: 600
   Tool Properties:

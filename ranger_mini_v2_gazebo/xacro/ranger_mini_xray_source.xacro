@@ -371,12 +371,12 @@
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
+  <!-- Include accessories (3D LiDAR and camera) -->
+  <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories_source.urdf.xacro" />
+
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     </plugin>
   </gazebo>
-
-  <!-- Include accessories (3D LiDAR and camera) -->
-  <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories.urdf.xacro" />
 
 </robot> 

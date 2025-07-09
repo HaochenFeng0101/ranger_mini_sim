@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/empty.world"/>
+    <arg name="gui" value="true"/>
+  </include>
+
+  <param name="ranger_mini_xray_source_description" 
+         command="$(find xacro)/xacro --inorder '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_source.xacro'" />
+  
+  <param name="ranger_mini_xray_detector_description" 
+         command="$(find xacro)/xacro --inorder '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_detector.xacro'" />
+  
+  <param name="ranger_mini_bed_trolly_description" 
+         command="$(find xacro)/xacro --inorder '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
+
+  <node name="spawn_xray_source" pkg="gazebo_ros" type="spawn_model" 
+        args="-param ranger_mini_xray_source_description -urdf -model ranger_mini_xray_source -x -5 -y 0 -z 0.4"
+        output="screen" launch-prefix="bash -c 'sleep 2; $0 $@'" />
+  
+  <node name="spawn_xray_detector" pkg="gazebo_ros" type="spawn_model" 
+        args="-param ranger_mini_xray_detector_description -urdf -model ranger_mini_xray_detector -x 5 -y 0 -z 0.4"
+        output="screen" launch-prefix="bash -c 'sleep 4; $0 $@'" />
+  
+  <node name="spawn_bed_trolly" pkg="gazebo_ros" type="spawn_model" 
+        args="-param ranger_mini_bed_trolly_description -urdf -model ranger_mini_bed_trolly -x 0 -y 0 -z 0.4"
+        output="screen" launch-prefix="bash -c 'sleep 6; $0 $@'" />
+</launch>

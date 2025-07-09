@@ -10,7 +10,8 @@
   <arg name="debug" default="false"/>
   <arg name="joy_dev0" default="/dev/input/js0" />
 
-  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  
+  
   <include file="$(find aws_robomaker_hospital_world)/launch/hospital.launch">
     <!-- <arg name="world_name" value="$(find robot_launch)/worlds/stage.world"/> -->
     <!-- <arg name="debug" value="$(arg debug)" /> -->

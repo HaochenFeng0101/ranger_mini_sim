@@ -6,8 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /source/RobotModel1
-        - /detector/RobotModel1
+        - /TF1
+        - /PointCloud21
       Splitter Ratio: 0.5
     Tree Height: 565
   - Class: rviz/Selection
@@ -28,21 +28,62 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
 Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 0.5
-      Class: rviz/TF
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
       Enabled: true
-      Filter (blacklist): ""
-      Filter (whitelist): ""
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        source/base_link:
+        base_link:
           Value: true
-        detector/base_link:
+        bed_frame_link:
+          Value: true
+        bed_headboard_link:
+          Value: true
+        bed_mattress_link:
+          Value: true
+        bed_support_link:
+          Value: true
+        fl_steering_wheel_link:
+          Value: true
+        fl_wheel_link:
+          Value: true
+        fr_steering_wheel_link:
+          Value: true
+        fr_wheel_link:
+          Value: true
+        rl_steering_wheel_link:
+          Value: true
+        rl_wheel_link:
+          Value: true
+        rr_steering_wheel_link:
+          Value: true
+        rr_wheel_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -50,59 +91,50 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        source/base_link:
-          {}
-        detector/base_link:
-          {}
+        {}
       Update Interval: 0
       Value: true
     - Alpha: 1
-      Class: rviz/RobotModel
-      Collision Enabled: false
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
       Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Name: source/RobotModel
-      Robot Description: source/robot_description
-      TF Prefix: source
-      Update Interval: 0
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.01
+      Style: Points
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /bed_points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
-      Visual Enabled: true
-    - Alpha: 1
-      Class: rviz/RobotModel
-      Collision Enabled: false
-      Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Name: detector/RobotModel
-      Robot Description: detector/robot_description
-      TF Prefix: detector
-      Update Interval: 0
-      Value: true
-      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: source/base_link
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -113,26 +145,44 @@ Visualization Manager:
     - Class: rviz/FocusCamera
     - Class: rviz/Measure
     - Class: rviz/SetInitialPose
-      Topic: /initialpose
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
     - Class: rviz/SetGoal
-      Topic: /move_base_simple/goal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /move_base_simple/goal
     - Class: rviz/PublishPoint
       Single click: true
-      Topic: /clicked_point
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /clicked_point
   Value: true
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8
+      Distance: 15
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1
+        X: 0
         Y: 0
-        Z: 0.5
+        Z: 0
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false

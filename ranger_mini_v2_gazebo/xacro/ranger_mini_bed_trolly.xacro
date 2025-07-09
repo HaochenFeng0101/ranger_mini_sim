@@ -30,19 +30,19 @@
     <link name="base_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0"/>
-            <mass value="10"/>
-            <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+            <mass value="33.75"/>
+            <inertia ixx="3.375" ixy="0.0" ixz="0.0" iyy="3.375" iyz="0.0" izz="3.375"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="1.57 0 3.14 " />
             <geometry>
-                <mesh filename="package://ranger_mini_v2/meshes/ranger_base.dae" />
+                <mesh filename="package://ranger_mini_v2/meshes/ranger_base.dae" scale="1.5 1.5 1.5"/>
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0 0 -0.1" rpy="0 0 0" />
+            <origin xyz="0 0 -0.15" rpy="0 0 0" />
             <geometry>
-                <box size="0.5 0.35 0.2"/>
+                <box size="0.75 0.525 0.3"/>
             </geometry>
         </collision>
     </link>
@@ -70,7 +70,7 @@
     </link>
 
     <joint name="bed_support_joint" type="fixed">
-        <origin xyz="-0.2 0 0" rpy="0 0 0" />
+        <origin xyz="-0.2 0 0.15" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="bed_support_link"/>
     </joint>
@@ -159,60 +159,7 @@
         <child link="bed_headboard_link"/>
     </joint>
 
-    <!-- Bed side rails -->
-    <link name="bed_rail_left_link">
-        <inertial>
-            <origin xyz="0.0 0.0 0.0"/>
-            <mass value="2"/>
-            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
-        </inertial>
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-                <box size="1.8 0.03 0.3"/>
-            </geometry>
-            <material name="bed_metal"/>
-        </visual>
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-                <box size="1.8 0.03 0.3"/>
-            </geometry>
-        </collision>
-    </link>
 
-    <joint name="bed_rail_left_joint" type="fixed">
-        <origin xyz="0 -0.415 0.15" rpy="0 0 0" />
-        <parent link="bed_frame_link"/>
-        <child link="bed_rail_left_link"/>
-    </joint>
-
-    <link name="bed_rail_right_link">
-        <inertial>
-            <origin xyz="0.0 0.0 0.0"/>
-            <mass value="2"/>
-            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
-        </inertial>
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-                <box size="1.8 0.03 0.3"/>
-            </geometry>
-            <material name="bed_metal"/>
-        </visual>
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-                <box size="1.8 0.03 0.3"/>
-            </geometry>
-        </collision>
-    </link>
-
-    <joint name="bed_rail_right_joint" type="fixed">
-        <origin xyz="0 0.415 0.15" rpy="0 0 0" />
-        <parent link="bed_frame_link"/>
-        <child link="bed_rail_right_link"/>
-    </joint>
 
    <link name="fl_steering_wheel_link">
         <inertial>
@@ -240,7 +187,7 @@
         </collision>
     </link>
     <joint name="fl_steering_wheel" type="revolute">
-        <origin xyz="0.23 0.206 -0.1" rpy="0 0 0" />
+        <origin xyz="0.345 0.309 -0.15" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="fl_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
@@ -273,7 +220,7 @@
         </link>
 
         <joint name="fl_wheel" type="continuous">
-            <origin xyz="0.03 0.01 -0.12" rpy="0 0 0" />
+            <origin xyz="0.045 0.015 -0.18" rpy="0 0 0" />
             <parent link="fl_steering_wheel_link"/>
             <child link="fl_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
@@ -300,7 +247,7 @@
         </collision>
     </link>
     <joint name="fr_steering_wheel" type="revolute">
-        <origin xyz="0.23 -0.206 -0.1" rpy="0 0 0" />
+        <origin xyz="0.345 -0.309 -0.15" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="fr_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
@@ -333,7 +280,7 @@
         </link>
 
         <joint name="fr_wheel" type="continuous">
-            <origin xyz="0.0 0.0 -0.12" rpy="0 0 0" />
+            <origin xyz="0.0 0.0 -0.18" rpy="0 0 0" />
             <parent link="fr_steering_wheel_link"/>
             <child link="fr_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
@@ -360,7 +307,7 @@
         </collision>
     </link>
     <joint name="rl_steering_wheel" type="revolute">
-        <origin xyz="-0.23 0.206 -0.1" rpy="0 0 0" />
+        <origin xyz="-0.345 0.309 -0.15" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="rl_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
@@ -393,7 +340,7 @@
         </link>
 
         <joint name="rl_wheel" type="continuous">
-            <origin xyz="0.0 0.0 -0.12 " rpy="0 0 0" />
+            <origin xyz="0.0 0.0 -0.18" rpy="0 0 0" />
             <parent link="rl_steering_wheel_link"/>
             <child link="rl_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
@@ -420,7 +367,7 @@
         </collision>
     </link>
     <joint name="rr_steering_wheel" type="revolute">
-        <origin xyz="-0.23 -0.206 -0.1" rpy="0 0 0" />
+        <origin xyz="-0.345 -0.309 -0.15" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="rr_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
@@ -453,7 +400,7 @@
         </link>
 
         <joint name="rr_wheel" type="continuous">
-            <origin xyz="0.0 0.0 -0.12 " rpy="0 0 0" />
+            <origin xyz="0.0 0.0 -0.18" rpy="0 0 0" />
             <parent link="rr_steering_wheel_link"/>
             <child link="rr_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
@@ -546,12 +493,15 @@
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
+  <!-- Include accessories (3D LiDAR and camera) -->
+  <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories_bed.urdf.xacro" />
+
+  <!-- Gazebo ROS Control Plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>
-
-  <!-- Include accessories (3D LiDAR and camera) -->
-  <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories.urdf.xacro" />
 
 </robot> 
