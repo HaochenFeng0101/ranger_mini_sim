@@ -1,0 +1,61 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="camera_mount_detector" params="prefix parent_link *origin">
+    <!-- Board on top of LiDAR -->
+    <link name="${prefix}_board">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.15 0.15 0.01" />
+        </geometry>
+        <material name="detector_blue" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.15 0.15 0.01" />
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Camera sits on the board -->
+    <link name="${prefix}_camera">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.03 0.02 0.02" />
+        </geometry>
+        <material name="black" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.01 0.02" />
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Attach board to parent (LiDAR top) -->
+    <joint name="${prefix}_board_joint" type="fixed">
+      <parent link="${parent_link}" />
+      <child link="${prefix}_board" />
+      <xacro:insert_block name="origin" />
+    </joint>
+
+    <!-- Attach camera to board -->
+    <joint name="${prefix}_camera_joint" type="fixed">
+      <parent link="${prefix}_board" />
+      <child link="${prefix}_camera" />
+      <origin xyz="0 0 0.01" rpy="0 0 0" />
+    </joint>
+
+    <gazebo reference="${prefix}_board">
+      <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}_camera">
+      <material>Gazebo/Black</material>
+    </gazebo>
+  </xacro:macro>
+
+</robot> 
