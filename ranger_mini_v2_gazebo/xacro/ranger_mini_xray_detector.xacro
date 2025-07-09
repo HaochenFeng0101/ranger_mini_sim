@@ -287,60 +287,118 @@
             <axis xyz="0 1 0" rpy="0 0 0" />
         </joint>
 
-    <!-- X-ray Detector Board - Vertical Tag-like Structure -->
-    <link name="detector_board">
+    <!-- Detector Board 1 - Connected to leg1 -->
+    <link name="detector_board1">
         <inertial>
             <origin xyz="0.0 0.0 -0.28"/>
-            <mass value="3"/>
-            <inertia ixx="0.2" ixy="0.0" ixz="0.0" iyy="0.2" iyz="0.0" izz="0.2"/>
+            <mass value="2"/>
+            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.15"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.8 0.02 0.6" />
+                <box size="0.3 0.02 0.6" />
             </geometry>
             <material name="detector_blue" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.6 0.02 0.8" />
+                <box size="0.3 0.02 0.6" />
             </geometry>
         </collision>
     </link>
 
-    <!-- Detector Board Support Frame - Connected to LiDAR -->
-    <link name="detector_support">
+    <!-- Detector Board 2 - Connected to leg2 -->
+    <link name="detector_board2">
         <inertial>
-            <origin xyz="0.0 0.0 0.0"/>
-            <mass value="1"/>
-            <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.05"/>
+            <origin xyz="0.0 0.0 -0.28"/>
+            <mass value="2"/>
+            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.15"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.2" />
+                <box size="0.3 0.02 0.6" />
+            </geometry>
+            <material name="detector_blue" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.3 0.02 0.6" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Detector Board Support Frame - Two thin legs connected to base -->
+    <link name="detector_support_leg1">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="0.25"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.02 0.02 0.4" />
             </geometry>
             <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.05 0.05 0.2" />
+                <box size="0.02 0.02 0.4" />
             </geometry>
         </collision>
     </link>
 
-    <joint name="detector_support_joint" type="fixed">
-        <origin xyz="0 0 0.08" rpy="0 0 0" />
-        <parent link="velodyne"/>
-        <child link="detector_support"/>
+    <link name="detector_support_leg2">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="0.25"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.02 0.02 0.4" />
+            </geometry>
+            <material name="dark_grey" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.02 0.02 0.4" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Two support legs connected to base (front left and front right) -->
+    <joint name="detector_support_leg1_joint" type="fixed">
+        <origin xyz="0.15 0.1 0.2" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="detector_support_leg1"/>
     </joint>
 
-    <joint name="detector_board_joint" type="fixed">
-        <origin xyz="0 0 0.32" rpy="0 0 0" />
-        <parent link="detector_support"/>
-        <child link="detector_board"/>
+    <joint name="detector_support_leg2_joint" type="fixed">
+        <origin xyz="-0.15 0.1 0.2" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="detector_support_leg2"/>
+    </joint>
+
+    <!-- Connect board1 to leg1 -->
+    <joint name="detector_board1_joint" type="fixed">
+        <origin xyz="0 0 0.4" rpy="0 0 0" />
+        <parent link="detector_support_leg1"/>
+        <child link="detector_board1"/>
+    </joint>
+
+    <!-- Connect board2 to leg2 -->
+    <joint name="detector_board2_joint" type="fixed">
+        <origin xyz="0 0 0.4" rpy="0 0 0" />
+        <parent link="detector_support_leg2"/>
+        <child link="detector_board2"/>
     </joint>
 
 
