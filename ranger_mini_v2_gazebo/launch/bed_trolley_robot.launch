@@ -19,28 +19,33 @@
   </include>
 
   <!-- Load the URDF description into the ROS Parameter Server -->
+  <param name="robot_description_bed_trolley" 
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
+  
+  <!-- Set the global robot_description parameter for compatibility -->
   <param name="robot_description" 
          command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
 
   <!-- Spawn Bed Trolley Robot -->
   <node name="spawn_bed_trolley" pkg="gazebo_ros" type="spawn_model" 
-        args="-urdf -param robot_description -model bed_trolley_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        args="-urdf -param robot_description_bed_trolley -model bed_trolley_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
         output="screen" />
 
-  <!-- Load and start the joint state controller -->
+  <!-- Load and start the controllers -->
   <rosparam file="$(find ranger_mini_control)/config/controller_v2.yaml" command="load" ns="bed_trolley"/>
   <rosparam file="$(find ranger_mini_control)/config/pid_gains_bed_trolley.yaml" command="load"/>
   <node name="controller_spawner" pkg="controller_manager" type="spawner" 
-        args="joint_state_controller" ns="bed_trolley" output="screen" />
+        args="joint_state_controller four_wheel_steering_controller" ns="bed_trolley" output="screen" />
   
   <node name="robot_state_publisher" 
         pkg="robot_state_publisher" 
-        type="robot_state_publisher" />
+        type="robot_state_publisher">
+    <remap from="joint_states" to="bed_trolley/joint_states"/>
+  </node>
 
-  <!-- Joint State Publisher -->
-  <node name="joint_state_publisher" 
-        pkg="joint_state_publisher" 
-        type="joint_state_publisher" />
+  <!-- Static transform from map to base_link -->
+  <node name="static_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 map base_link 100" />
 
   <!-- Launch RViz for Bed Trolley Robot -->
   <node name="rviz_bed_trolley" pkg="rviz" type="rviz"

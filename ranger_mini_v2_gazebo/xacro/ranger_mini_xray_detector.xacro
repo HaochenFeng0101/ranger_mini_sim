@@ -294,21 +294,21 @@
     <!-- Detector Board 1 - Connected to leg1 -->
     <link name="detector_board1">
         <inertial>
-            <origin xyz="0.0 0.0 -0.28"/>
-            <mass value="2"/>
-            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.15"/>
+            <origin xyz="0.0 0.0 -0.35"/>
+            <mass value="3"/>
+            <inertia ixx="0.2" ixy="0.0" ixz="0.0" iyy="0.2" iyz="0.0" izz="0.2"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.3 0.02 0.6" />
+                <box size="0.4 0.03 0.8" />
             </geometry>
             <material name="detector_blue" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.3 0.02 0.6" />
+                <box size="0.4 0.03 0.8" />
             </geometry>
         </collision>
     </link>
@@ -316,21 +316,21 @@
     <!-- Detector Board 2 - Connected to leg2 -->
     <link name="detector_board2">
         <inertial>
-            <origin xyz="0.0 0.0 -0.28"/>
-            <mass value="2"/>
-            <inertia ixx="0.15" ixy="0.0" ixz="0.0" iyy="0.15" iyz="0.0" izz="0.15"/>
+            <origin xyz="0.0 0.0 -0.35"/>
+            <mass value="3"/>
+            <inertia ixx="0.2" ixy="0.0" ixz="0.0" iyy="0.2" iyz="0.0" izz="0.2"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.3 0.02 0.6" />
+                <box size="0.4 0.03 0.8" />
             </geometry>
             <material name="detector_blue" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.3 0.02 0.6" />
+                <box size="0.4 0.03 0.8" />
             </geometry>
         </collision>
     </link>
@@ -339,20 +339,20 @@
     <link name="detector_support_leg1">
         <inertial>
             <origin xyz="0.0 0.0 0.0"/>
-            <mass value="0.25"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="0.35"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0" iyy="0.015" iyz="0.0" izz="0.015"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.4" />
+                <box size="0.02 0.02 0.9" />
             </geometry>
             <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.4" />
+                <box size="0.02 0.02 0.9" />
             </geometry>
         </collision>
     </link>
@@ -360,20 +360,20 @@
     <link name="detector_support_leg2">
         <inertial>
             <origin xyz="0.0 0.0 0.0"/>
-            <mass value="0.25"/>
-            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+            <mass value="0.35"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0" iyy="0.015" iyz="0.0" izz="0.015"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.4" />
+                <box size="0.02 0.02 0.9" />
             </geometry>
             <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.4" />
+                <box size="0.02 0.02 0.9" />
             </geometry>
         </collision>
     </link>
@@ -393,14 +393,14 @@
 
     <!-- Connect board1 to leg1 -->
     <joint name="detector_board1_joint" type="fixed">
-        <origin xyz="0 0 0.4" rpy="0 0 0" />
+        <origin xyz="0 0 0.9" rpy="0 0 0" />
         <parent link="detector_support_leg1"/>
         <child link="detector_board1"/>
     </joint>
 
     <!-- Connect board2 to leg2 -->
     <joint name="detector_board2_joint" type="fixed">
-        <origin xyz="0 0 0.4" rpy="0 0 0" />
+        <origin xyz="0 0 0.9" rpy="0 0 0" />
         <parent link="detector_support_leg2"/>
         <child link="detector_board2"/>
     </joint>

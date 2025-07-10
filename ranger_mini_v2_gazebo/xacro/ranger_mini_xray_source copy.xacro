@@ -1,38 +1,38 @@
 <?xml version="1.0"?>
 
-<robot name="ranger_mini_v2" 
+<robot name="ranger_mini_xray_source" 
     xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <!-- <xacro:include filename="$(find ranger_mini_v2)/urdf/ranger_l.xacro" />
-    <xacro:include filename="$(find ranger_mini_v2)/urdf/ranger_r.xacro" /> -->
-
-    <!-- Variables -->
-    <!-- <xacro:property name="M_PI" value="3.14159"/> -->
-
-    <!-- Vehicle Geometries -->
-    <!-- <xacro:property name="base_x_size" value="1.0" />
-    <xacro:property name="base_y_size" value="0.380000" />
-    <xacro:property name="base_z_size" value="0.210000" />
-
-    <xacro:property name="wheelbase" value="0.498" />
-    <xacro:property name="track" value="0.58306" />
-    <xacro:property name="wheel_vertical_offset" value="-0.0702" />
-
-    <xacro:property name="wheel_length" value="1.1653e-01" />
-    <xacro:property name="wheel_radius" value="1.6459e-01" /> -->
+    <!-- Material definitions -->
+    <material name="black">
+        <color rgba="0.1 0.1 0.1 1" />
+    </material>
+    <material name="white">
+        <color rgba="1 1 1 1" />
+    </material>
+    <material name="dark_grey">
+        <color rgba="0.3 0.3 0.3 1" />
+    </material>
+    <material name="metallic_grey">
+        <color rgba="0.7 0.7 0.7 1" />
+    </material>
+    <material name="source_red">
+        <color rgba="0.8 0.2 0.2 1" />
+    </material>
 
     <!-- Base link -->
     <link name="base_link">
         <inertial>
             <origin xyz="0.0 0.0 0.0"/>
-            <mass value="10"/>
-            <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+            <mass value="15"/>
+            <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5"/>
         </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="1.57 0 3.14 " />
             <geometry>
                 <mesh filename="package://ranger_mini_v2/meshes/ranger_base.dae" />
             </geometry>
+            <material name="metallic_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 -0.1" rpy="0 0 0" />
@@ -54,6 +54,7 @@
             <geometry>
                     <mesh filename="package://ranger_mini_v2/meshes/fl.stl" />
             </geometry>
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0.008" rpy="0 0 0" />
@@ -87,6 +88,7 @@
                 <geometry>
                     <cylinder length="0.01" radius="0.01" />
                 </geometry>
+                <material name="black" />
             </visual>
             <collision>
                 <origin xyz="0 0 0" rpy="1.57 0 0" />
@@ -120,6 +122,7 @@
             <geometry>
                 <mesh filename="package://ranger_mini_v2/meshes/fr.stl" />
             </geometry>
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0.008" rpy="0 0 0" />
@@ -147,6 +150,7 @@
                 <geometry>
                     <cylinder length="0.01" radius="0.01" />
                 </geometry>
+                <material name="black" />
             </visual>
             <collision>
                 <origin xyz="0 0 0" rpy="1.57 0 0" />
@@ -180,6 +184,7 @@
             <geometry>
                     <mesh filename="package://ranger_mini_v2/meshes/fl.stl" />
             </geometry>
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0.008" rpy="0 0 0" />
@@ -207,6 +212,7 @@
                 <geometry>
                     <cylinder length="0.01" radius="0.01" />
                 </geometry>
+                <material name="black" />
             </visual>
             <collision>
                 <origin xyz="0 0 0" rpy="1.57 0 0" />
@@ -240,6 +246,7 @@
             <geometry>
                     <mesh filename="package://ranger_mini_v2/meshes/fr.stl" />
             </geometry>
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -267,6 +274,7 @@
                 <geometry>
                     <cylinder length="0.01" radius="0.01" />
                 </geometry>
+                <material name="black" />
             </visual>
             <collision>
                 <origin xyz="0 0 0" rpy="1.57 0 0" />
@@ -287,6 +295,8 @@
             <child link="rr_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
         </joint>
+
+
 
 	<transmission name="fl_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
@@ -375,10 +385,16 @@
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
+  <!-- Include accessories (3D LiDAR and camera) -->
+  <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories_source.urdf.xacro" />
+
+  <!-- Gazebo ROS Control Plugin -->
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/xray_source</robotNamespace>
+              <robotParam>robot_description</robotParam>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>
 
-
-</robot>
+</robot> 
