@@ -393,14 +393,14 @@
 
     <!-- Connect board1 to leg1 -->
     <joint name="detector_board1_joint" type="fixed">
-        <origin xyz="0 0 0.9" rpy="0 0 0" />
+        <origin xyz="0 0 0.7" rpy="0 0 0" />
         <parent link="detector_support_leg1"/>
         <child link="detector_board1"/>
     </joint>
 
     <!-- Connect board2 to leg2 -->
     <joint name="detector_board2_joint" type="fixed">
-        <origin xyz="0 0 0.9" rpy="0 0 0" />
+        <origin xyz="0 0 0.7" rpy="0 0 0" />
         <parent link="detector_support_leg2"/>
         <child link="detector_board2"/>
     </joint>
