@@ -2,15 +2,20 @@
 <launch>
 
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
-  <!-- <arg name="paused" default="false"/>
-  <arg name="use_sim_time" default="true"/> -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="true"/>
-  <!-- <arg name="headless" default="false"/>
-  <arg name="debug" default="false"/> -->
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
 
-  <!-- Launch AWS Hospital World -->
-  <include file="$(find aws_robomaker_hospital_world)/launch/hospital.launch">
+  <!-- Launch Empty World -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/empty.world"/>
     <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="debug" value="$(arg debug)"/>
   </include>
 
   <!-- Load the URDF descriptions into the ROS Parameter Server -->
@@ -43,7 +48,7 @@
         args="-urdf -param ranger_mini_bed_trolly_description -model ranger_mini_bed_trolly -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
         output="screen" launch-prefix="bash -c 'sleep 6; $0 $@'" />
 
-    <!-- Add joint state publishers for each robot in RViz -->
+  <!-- Add joint state publishers for each robot in RViz -->
   <!-- X-ray Source Robot -->
   <group ns="xray_source">
     <param name="robot_description" 
@@ -83,10 +88,17 @@
   <!-- Note: Robot control is disabled to avoid service conflicts -->
   <!-- To enable control, use: roslaunch ranger_mini_control robot_control_v2.launch -->
 
+  <!-- Launch 3 separate RViz windows for each robot -->
+  <!-- X-ray Source Robot RViz -->
+  <node name="rviz_xray_source" pkg="rviz" type="rviz"
+        args="-d $(find ranger_mini_v2_gazebo)/rviz/xray_source_robot.rviz" />
+  
+  <!-- X-ray Detector Robot RViz -->
+  <node name="rviz_xray_detector" pkg="rviz" type="rviz"
+        args="-d $(find ranger_mini_v2_gazebo)/rviz/xray_detector_robot.rviz" />
+  
+  <!-- Bed Trolley Robot RViz -->
+  <node name="rviz_bed_trolley" pkg="rviz" type="rviz"
+        args="-d $(find ranger_mini_v2_gazebo)/rviz/bed_trolley_robot.rviz" />
 
-
-  <!-- Launch RViz with config for all 3 robots with laser and camera data -->
-  <node name="rviz" pkg="rviz" type="rviz"
-        args="-d $(find ranger_mini_v2_gazebo)/rviz/hospital_robots.rviz" />
-
-</launch>
+</launch> 

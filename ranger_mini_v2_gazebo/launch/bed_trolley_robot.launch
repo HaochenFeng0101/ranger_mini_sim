@@ -20,11 +20,11 @@
 
   <!-- Load the URDF description into the ROS Parameter Server -->
   <param name="robot_description" 
-         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_source.xacro'" />
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
 
-  <!-- Spawn X-ray Source Robot -->
-  <node name="spawn_xray_source" pkg="gazebo_ros" type="spawn_model" 
-        args="-urdf -param robot_description -model xray_source_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+  <!-- Spawn Bed Trolley Robot -->
+  <node name="spawn_bed_trolley" pkg="gazebo_ros" type="spawn_model" 
+        args="-urdf -param robot_description -model bed_trolley_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
         output="screen" />
 
   <!-- Load and start the joint state controller -->
@@ -36,8 +36,8 @@
         pkg="robot_state_publisher" 
         type="robot_state_publisher" />
 
-  <!-- Launch RViz for X-ray Source Robot -->
-  <node name="rviz_xray_source" pkg="rviz" type="rviz"
-        args="-d $(find ranger_mini_v2_gazebo)/rviz/xray_source_robot.rviz" />
+  <!-- Launch RViz for Bed Trolley Robot -->
+  <node name="rviz_bed_trolley" pkg="rviz" type="rviz"
+        args="-d $(find ranger_mini_v2_gazebo)/rviz/bed_trolley_robot.rviz" />
 
-</launch>
+</launch> 
