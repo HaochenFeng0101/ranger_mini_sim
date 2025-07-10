@@ -24,17 +24,23 @@
 
   <!-- Spawn Bed Trolley Robot -->
   <node name="spawn_bed_trolley" pkg="gazebo_ros" type="spawn_model" 
-        args="-urdf -param robot_description -model bed_trolley_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        args="-urdf -param robot_description -model bed_trolley_robot -x 0 -y 0 -z 4 -R 0.0 -P 0.0 -Y 0.0"
         output="screen" />
 
   <!-- Load and start the joint state controller -->
-  <rosparam file="$(find ranger_mini_control)/config/controller_v2.yaml" command="load"/>
+  <rosparam file="$(find ranger_mini_control)/config/controller_v2.yaml" command="load" ns="bed_trolley"/>
+  <rosparam file="$(find ranger_mini_control)/config/pid_gains_bed_trolley.yaml" command="load"/>
   <node name="controller_spawner" pkg="controller_manager" type="spawner" 
-        args="joint_state_controller" output="screen" />
+        args="joint_state_controller" ns="bed_trolley" output="screen" />
   
   <node name="robot_state_publisher" 
         pkg="robot_state_publisher" 
         type="robot_state_publisher" />
+
+  <!-- Joint State Publisher -->
+  <node name="joint_state_publisher" 
+        pkg="joint_state_publisher" 
+        type="joint_state_publisher" />
 
   <!-- Launch RViz for Bed Trolley Robot -->
   <node name="rviz_bed_trolley" pkg="rviz" type="rviz"

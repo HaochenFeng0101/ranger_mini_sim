@@ -28,13 +28,19 @@
         output="screen" />
 
   <!-- Load and start the joint state controller -->
-  <rosparam file="$(find ranger_mini_control)/config/controller_v2.yaml" command="load"/>
+  <rosparam file="$(find ranger_mini_control)/config/controller_v2.yaml" command="load" ns="xray_source"/>
+  <rosparam file="$(find ranger_mini_control)/config/pid_gains_xray_source.yaml" command="load"/>
   <node name="controller_spawner" pkg="controller_manager" type="spawner" 
-        args="joint_state_controller" output="screen" />
+        args="joint_state_controller" ns="xray_source" output="screen" />
   
   <node name="robot_state_publisher" 
         pkg="robot_state_publisher" 
         type="robot_state_publisher" />
+
+  <!-- Joint State Publisher -->
+  <node name="joint_state_publisher" 
+        pkg="joint_state_publisher" 
+        type="joint_state_publisher" />
 
   <!-- Launch RViz for X-ray Source Robot -->
   <node name="rviz_xray_source" pkg="rviz" type="rviz"

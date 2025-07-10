@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load the URDF description into the ROS Parameter Server -->
+  <param name="robot_description_bed_trolley" 
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
+
+  <!-- Spawn Bed Trolley Robot -->
+  <node name="spawn_bed_trolley" pkg="gazebo_ros" type="spawn_model" 
+        args="-urdf -param robot_description_bed_trolley -model bed_trolley_robot -x 3 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        output="screen" />
+
+  <!-- Load and start the joint state controller -->
+  <rosparam file="$(find ranger_mini_control)/config/controller_v2_clean.yaml" command="load" ns="bed_trolley"/>
+  <rosparam file="$(find ranger_mini_control)/config/pid_gains_bed_trolley.yaml" command="load"/>
+  <node name="bed_trolley_controller_spawner" pkg="controller_manager" type="spawner" 
+        args="joint_state_controller" ns="bed_trolley" output="screen" />
+
+  <!-- Robot State Publisher for Bed Trolley -->
+  <node name="bed_trolley_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
+        respawn="false" output="screen">
+    <param name="publish_frequency" type="double" value="30.0" />
+    <remap from="robot_description" to="robot_description_bed_trolley" />
+  </node>
+
+  <!-- Static Transform Publisher for Bed Trolley -->
+  <node name="bed_trolley_static_tf" pkg="tf" type="static_transform_publisher" 
+        args="3 0 0 0 0 0 map bed_trolley/base_link 100" />
+
+</launch> 

@@ -20,24 +20,24 @@ Visualization Manager:
     - Class: rviz/TF
       Name: TF
       Enabled: true
-      Show Arrows: true
+      Show Arrows: false
       Show Axes: false
-      Show Names: true
+      Show Names: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
     - Class: rviz/RobotModel
-      Name: X-ray Source Robot
+      Name: X-ray Detector Robot
       Enabled: true
-      Robot Description: /xray_source/robot_description
+      Robot Description: robot_description_xray_detector
       Visual Enabled: true
       Collision Enabled: false
       Links:
         All Links Enabled: true
     - Class: rviz/RobotModel
-      Name: X-ray Detector Robot
+      Name: X-ray Source Robot
       Enabled: true
-      Robot Description: /xray_detector/robot_description
+      Robot Description: robot_description_xray_source
       Visual Enabled: true
       Collision Enabled: false
       Links:
@@ -45,26 +45,15 @@ Visualization Manager:
     - Class: rviz/RobotModel
       Name: Bed Trolley Robot
       Enabled: true
-      Robot Description: /bed_trolley/robot_description
+      Robot Description: robot_description_bed_trolley
       Visual Enabled: true
       Collision Enabled: false
       Links:
         All Links Enabled: true
     - Class: rviz/PointCloud2
-      Name: X-ray Source Laser
-      Enabled: true
-      Topic: /xray_source/mid/points
-      Queue Size: 10
-      Color: 255; 0; 0
-      Style: Points
-      Size (Pixels): 3
-      Size (m): 0.02
-      Use Fixed Frame: true
-      Value: true
-    - Class: rviz/PointCloud2
       Name: X-ray Detector Laser
       Enabled: true
-      Topic: /xray_detector/mid/points
+      Topic: /detector_mid/points
       Queue Size: 10
       Color: 0; 255; 0
       Style: Points
@@ -73,9 +62,20 @@ Visualization Manager:
       Use Fixed Frame: true
       Value: true
     - Class: rviz/PointCloud2
+      Name: X-ray Source Laser
+      Enabled: true
+      Topic: /source_mid/points
+      Queue Size: 10
+      Color: 255; 0; 0
+      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.02
+      Use Fixed Frame: true
+      Value: true
+    - Class: rviz/PointCloud2
       Name: Bed Trolley Laser
       Enabled: true
-      Topic: /bed_trolley/mid/points
+      Topic: /trolley_mid/points
       Queue Size: 10
       Color: 0; 0; 255
       Style: Points
@@ -84,38 +84,29 @@ Visualization Manager:
       Use Fixed Frame: true
       Value: true
     - Class: rviz/Image
-      Name: X-ray Source Camera
+      Name: X-ray Detector Camera
       Enabled: true
-      Topic: /xray_source/front/image_raw
+      Topic: /detector_front/image_raw
       Queue Size: 10
       Transport Hint: raw
       Unreliable: false
     - Class: rviz/Image
-      Name: X-ray Detector Camera
+      Name: X-ray Source Camera
       Enabled: true
-      Topic: /xray_detector/front/image_raw
+      Topic: /source_front/image_raw
       Queue Size: 10
       Transport Hint: raw
       Unreliable: false
     - Class: rviz/Image
       Name: Bed Trolley Camera
       Enabled: true
-      Topic: /bed_trolley/front/image_raw
+      Topic: /trolley_front/image_raw
       Queue Size: 10
       Transport Hint: raw
       Unreliable: false
-    - Class: rviz/Map
-      Name: Map
-      Enabled: false
-      Topic: /map
-      Alpha: 0.7
-      Color Scheme: map
-      Draw Behind: true
-      Use Timestamp: false
-      Value: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -134,9 +125,9 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 15
+      Distance: 12
       Focal Point:
-        X: 0
+        X: 2
         Y: 0
         Z: 0
       Name: Current View
@@ -146,35 +137,35 @@ Visualization Manager:
       Yaw: 3.15
       Value: Orbit (rviz)
 Window Geometry:
-  Height: 900
-  Width: 1600
-  X: 100
+  Height: 600
+  Width: 800
+  X: 900
   Y: 100
   Displays:
     collapsed: false
     geometry:
       x: 10
       y: 10
-      width: 400
-      height: 600
+      width: 300
+      height: 400
   Tool Properties:
     collapsed: false
     geometry:
-      x: 420
+      x: 320
       y: 10
-      width: 300
-      height: 200
+      width: 200
+      height: 150
   Views:
     collapsed: false
     geometry:
-      x: 420
-      y: 220
-      width: 300
-      height: 200
+      x: 320
+      y: 170
+      width: 200
+      height: 150
   Time:
     collapsed: false
     geometry:
-      x: 420
-      y: 430
-      width: 300
+      x: 320
+      y: 330
+      width: 200
       height: 100 
