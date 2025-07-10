@@ -24,7 +24,7 @@
 
   <!-- Spawn Bed Trolley Robot -->
   <node name="spawn_bed_trolley" pkg="gazebo_ros" type="spawn_model" 
-        args="-urdf -param robot_description -model bed_trolley_robot -x 0 -y 0 -z 4 -R 0.0 -P 0.0 -Y 0.0"
+        args="-urdf -param robot_description -model bed_trolley_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
         output="screen" />
 
   <!-- Load and start the joint state controller -->

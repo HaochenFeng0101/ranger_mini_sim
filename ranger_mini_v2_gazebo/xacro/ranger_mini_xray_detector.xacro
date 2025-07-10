@@ -511,7 +511,7 @@
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/xray_detector</robotNamespace>
-      <robotParam>robot_description_xray_detector</robotParam>
+              <robotParam>robot_description</robotParam>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>

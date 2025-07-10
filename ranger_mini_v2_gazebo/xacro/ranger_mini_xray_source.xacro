@@ -22,6 +22,11 @@
 
     <!-- Base link -->
     <link name="base_link">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="15"/>
+            <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5"/>
+        </inertial>
         <visual>
             <origin xyz="0 0 0" rpy="1.57 0 3.14 " />
             <geometry>
@@ -291,6 +296,64 @@
             <axis xyz="0 1 0" rpy="0 0 0" />
         </joint>
 
+    <!-- X-ray Source Component -->
+    <link name="xray_source_component">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="5"/>
+            <inertia ixx="0.2" ixy="0.0" ixz="0.0" iyy="0.2" iyz="0.0" izz="0.2"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.1" length="0.3" />
+            </geometry>
+            <material name="source_red" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.1" length="0.3" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- X-ray Source Support -->
+    <link name="xray_source_support">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="2"/>
+            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.02 0.02 0.4" />
+            </geometry>
+            <material name="dark_grey" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.02 0.02 0.4" />
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Connect source support to base -->
+    <joint name="xray_source_support_joint" type="fixed">
+        <origin xyz="0 0 0.2" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="xray_source_support"/>
+    </joint>
+
+    <!-- Connect source component to support -->
+    <joint name="xray_source_component_joint" type="fixed">
+        <origin xyz="0 0 0.4" rpy="0 0 0" />
+        <parent link="xray_source_support"/>
+        <child link="xray_source_component"/>
+    </joint>
+
 	<transmission name="fl_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="fl_steering_wheel">
@@ -385,7 +448,7 @@
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/xray_source</robotNamespace>
-      <robotParam>robot_description_xray_source</robotParam>
+              <robotParam>robot_description</robotParam>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>
