@@ -306,14 +306,14 @@
         <visual>
             <origin xyz="0 0 0.2" rpy="0 0 0" />
             <geometry>
-                <cylinder radius="0.08" length="1.4"/>
+                <cylinder radius="0.08" length="0.8"/>
             </geometry>
             <material name="source_red" />
         </visual>
         <collision>
             <origin xyz="0 0 0.2" rpy="0 0 0" />
             <geometry>
-                <cylinder radius="0.08" length="1.4"/>
+                <cylinder radius="0.08" length="0.8"/>
             </geometry>
         </collision>
     </link>

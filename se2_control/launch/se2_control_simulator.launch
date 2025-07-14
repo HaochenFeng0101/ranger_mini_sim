@@ -1,0 +1,40 @@
+<launch>
+  <!-- SE2 Control with Simulator (No Gazebo) -->
+  
+  <!-- Launch SE2 Simulator -->
+  <node pkg="se2_control" type="se2_simulator" name="se2_simulator" output="screen"/>
+  
+  <!-- Launch SE2 Controller -->
+  <node pkg="nodelet" type="nodelet" name="se2_control_nodelet"
+        args="standalone se2_control/SE2ControlNodelet"
+        output="screen">
+    
+    <!-- Vehicle parameters -->
+    <param name="vehicle_name" value="xray_source" />
+    <param name="mass" value="15.0" />
+    <param name="wheel_base" value="0.46" />
+    <param name="track" value="0.412" />
+    <param name="wheel_radius" value="0.08" />
+    
+    <!-- Control gains -->
+    <param name="kx_x" value="1.0" />
+    <param name="kx_y" value="1.0" />
+    <param name="kyaw" value="1.0" />
+    
+    <!-- Initial position (optional) -->
+    <param name="init_x" value="0.0" />
+    <param name="init_y" value="0.0" />
+    <param name="init_z" value="-9999.0" />
+    
+    <!-- Use external yaw -->
+    <param name="use_external_yaw" value="true" />
+  </node>
+
+  <!-- Launch custom keyboard teleop for HJKL control -->
+  <node pkg="se2_control" type="xray_source_keyboard_teleop.py" name="xray_source_keyboard_teleop" output="screen"/>
+
+  <!-- Launch RViz for visualization -->
+  <node pkg="rviz" type="rviz" name="rviz" 
+        args="-d $(find se2_control)/config/se2_control_visualization.rviz"/>
+
+</launch> 

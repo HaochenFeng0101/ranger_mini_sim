@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package>
+  <name>se2_control</name>
+  <version>0.0.0</version>
+  <description>
+    SE2 controller for X-ray source model with four-wheel steering
+  </description>
+  <maintainer email="todo@todo.todo">SE2 Control Maintainer</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/se2_control</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>nodelet</build_depend>
+  <build_depend>cmake_utils</build_depend>
+  <build_depend>four_wheel_steering_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+
+  <run_depend>roscpp</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>cmake_utils</run_depend>
+  <run_depend>four_wheel_steering_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>message_runtime</run_depend>
+
+  <export>
+    <nodelet plugin="${prefix}/nodelet_plugin.xml"/>
+  </export>
+</package> 

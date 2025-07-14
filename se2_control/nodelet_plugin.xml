@@ -1,0 +1,7 @@
+<library path="lib/libse2_control_nodelet">
+  <class name="se2_control/SE2ControlNodelet" type="se2_control::SE2ControlNodelet" base_class_type="nodelet::Nodelet">
+    <description>
+      SE2 controller nodelet for X-ray source model
+    </description>
+  </class>
+</library> 

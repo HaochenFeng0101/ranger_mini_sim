@@ -52,8 +52,11 @@
   <node name="static_transform_publisher" pkg="tf" type="static_transform_publisher"
         args="0 0 0 0 0 0 map base_link 100" />
 
+  <!-- Launch Simple Keyboard Teleop -->
+  <node pkg="se2_control" type="xray_detector_simple_teleop.py" name="xray_detector_simple_teleop" output="screen"/>
+
   <!-- Launch RViz for X-ray Detector Robot -->
   <node name="rviz_xray_detector" pkg="rviz" type="rviz"
         args="-d $(find ranger_mini_v2_gazebo)/rviz/xray_detector_robot.rviz" />
 
-</launch>
+</launch> 
