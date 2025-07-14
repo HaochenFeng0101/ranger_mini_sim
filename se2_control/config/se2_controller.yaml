@@ -1,0 +1,43 @@
+se2_controller:
+  # Vehicle parameters
+  vehicle_name: "robot"
+  mass: 15.0
+  wheel_base: 0.46
+  track: 0.412
+  wheel_radius: 0.08
+  
+  # Control gains
+  kx_x: 1.0
+  kx_y: 1.0
+  kyaw: 1.0
+  
+  # Initial position (optional)
+  init_x: 0.0
+  init_y: 0.0
+  init_z: -9999.0
+  
+  # Use external yaw
+  use_external_yaw: true
+  
+  # PID control parameters
+  linear_pid:
+    p: 2.0
+    i: 0.1
+    d: 0.05
+    max_output: 10.0
+    min_output: -10.0
+    
+  angular_pid:
+    p: 3.0
+    i: 0.2
+    d: 0.1
+    max_output: 5.0
+    min_output: -5.0
+    
+  # Velocity limits
+  max_linear_velocity: 2.0
+  max_angular_velocity: 3.0
+  
+  # Steering parameters
+  max_steering_angle: 0.785  # 45 degrees
+  steering_velocity_limit: 2.0 

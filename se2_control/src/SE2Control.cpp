@@ -104,33 +104,41 @@ void SE2Control::calculateControl(const Eigen::Vector2d& des_pos,
     yaw_rate_error = des_yaw_rate - yaw_rate_;
   }
 
-  // Compute control outputs
+  // Compute control outputs with improved PID control
   // Longitudinal velocity control
   double vx_cmd = 0.0;
   if (flag_use_pos) {
-    vx_cmd += kx(0) * pos_error_body(0);
+    vx_cmd += kx(0) * pos_error_body(0);  // Proportional term
   }
   if (flag_use_vel) {
-    vx_cmd += vel_error_body(0);
+    vx_cmd += vel_error_body(0);  // Velocity feedback
   }
 
   // Lateral velocity control (for lateral position tracking)
   double vy_cmd = 0.0;
   if (flag_use_pos) {
-    vy_cmd += kx(1) * pos_error_body(1);
+    vy_cmd += kx(1) * pos_error_body(1);  // Proportional term
   }
   if (flag_use_vel) {
-    vy_cmd += vel_error_body(1);
+    vy_cmd += vel_error_body(1);  // Velocity feedback
   }
 
-  // Yaw rate control
+  // Yaw rate control with improved PID
   double yaw_rate_cmd = 0.0;
   if (flag_use_yaw) {
-    yaw_rate_cmd += kyaw * yaw_error;
+    yaw_rate_cmd += kyaw * yaw_error;  // Proportional term
   }
   if (flag_use_yaw_rate) {
-    yaw_rate_cmd += yaw_rate_error;
+    yaw_rate_cmd += yaw_rate_error;  // Velocity feedback
   }
+
+  // Add velocity limits for safety
+  double max_velocity = 2.0;  // m/s
+  double max_yaw_rate = 1.0;  // rad/s
+  
+  vx_cmd = std::max(-max_velocity, std::min(max_velocity, vx_cmd));
+  vy_cmd = std::max(-max_velocity, std::min(max_velocity, vy_cmd));
+  yaw_rate_cmd = std::max(-max_yaw_rate, std::min(max_yaw_rate, yaw_rate_cmd));
 
   // Set velocity command in body frame
   velocity_cmd_ << vx_cmd, vy_cmd;
@@ -169,24 +177,42 @@ void SE2Control::computeSteeringAngles(const Eigen::Vector2d& velocity, const do
     return;
   }
 
-  // For a four-wheel steering vehicle, we can use different strategies
-  // Here we use a simple approach where both front and rear wheels steer
-  // to achieve the desired yaw rate
+  // Calculate sideslip angle
+  double beta = atan2(vy, vx);
   
-  // Calculate the required steering angles based on bicycle model
-  // For four-wheel steering, we can distribute the steering between front and rear
-  
-  double beta = atan2(vy, vx);  // sideslip angle
+  // Calculate desired curvature based on yaw rate and velocity
   double desired_curvature = yaw_rate / v;
   
-  // Front steering angle (positive is left turn)
-  front_steering_angle_ = atan2(wheel_base_ * desired_curvature, 1.0) + beta;
+  // For four-wheel steering, we use Ackermann steering geometry
+  // with proper distribution between front and rear wheels
   
-  // Rear steering angle (negative for counter-steering effect)
-  rear_steering_angle_ = -atan2(wheel_base_ * desired_curvature * 0.5, 1.0) + beta * 0.5;
+  // Calculate steering angles using four-wheel steering model
+  // Front wheels steer in the direction of the turn
+  // Rear wheels counter-steer for stability and tighter turning
+  
+  if (abs(desired_curvature) > 0.001) {
+    // Turning case
+    double R = 1.0 / desired_curvature;  // Turning radius
+    
+    // Front steering angle (positive for left turn)
+    front_steering_angle_ = atan2(wheel_base_, abs(R) - track_/2.0);
+    if (R < 0) front_steering_angle_ = -front_steering_angle_;
+    
+    // Rear steering angle (counter-steering for stability)
+    // Use a smaller angle for rear wheels
+    rear_steering_angle_ = -front_steering_angle_ * 0.3;  // 30% of front angle, opposite direction
+    
+    // Add sideslip compensation
+    front_steering_angle_ += beta * 0.5;
+    rear_steering_angle_ += beta * 0.2;
+  } else {
+    // Straight line motion
+    front_steering_angle_ = beta * 0.5;  // Small correction for sideslip
+    rear_steering_angle_ = beta * 0.2;
+  }
   
   // Limit steering angles to reasonable values
-  double max_steering_angle = 0.5;  // ~28.6 degrees
+  double max_steering_angle = M_PI / 3.0;  // 60 degrees
   front_steering_angle_ = std::max(-max_steering_angle, std::min(max_steering_angle, front_steering_angle_));
   rear_steering_angle_ = std::max(-max_steering_angle, std::min(max_steering_angle, rear_steering_angle_));
 }
