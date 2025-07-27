@@ -143,7 +143,7 @@ Visualization Manager:
       Covariance yaw: 0.06853891909122467
       Topic: /initialpose
     - Class: rviz/SetGoal
-      Topic: /xray_source/position_cmd
+      Topic: /xray_source/pose_stamped
     - Class: rviz/PublishPoint
       Single click: true
       Topic: /clicked_point

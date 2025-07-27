@@ -1,40 +1,33 @@
-# PID gains for X-ray source joints
-fl_steering_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-fr_steering_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-rl_steering_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-rr_steering_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-fl_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-fr_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-rl_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0
-
-rr_wheel:
-  p: 100.0
-  i: 0.01
-  d: 10.0 
+pid_gains:
+  fl_steering_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  fr_steering_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  rl_steering_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  rr_steering_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  fl_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  fr_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  rl_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0
+  rr_wheel:
+    p: 100.0
+    i: 0.0
+    d: 1.0 
