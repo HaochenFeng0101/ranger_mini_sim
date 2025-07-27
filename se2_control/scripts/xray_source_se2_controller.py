@@ -84,7 +84,7 @@ class XraySourceSE2Controller:
         steering_cmd.data.acceleration = 0.0
         steering_cmd.data.jerk = 0.0
         
-        # Use the same Ackermann-like calculation as simple teleop
+        # Use the same Ackermann-like calculation 
         if abs(linear_x) > 0.01 and abs(angular_z) > 0.01:
             R = linear_x / angular_z
             front_steering = math.atan(self.wheel_base / (R - self.track/2.0))
@@ -95,8 +95,11 @@ class XraySourceSE2Controller:
             front_steering = 0.0
             rear_steering = 0.0
         elif abs(angular_z) > 0.01:
-            front_steering = math.copysign(math.pi/2, angular_z)
-            rear_steering = -front_steering
+            # For pure rotation, use more moderate steering angles
+            steering_angle = math.copysign(math.pi/4, angular_z)  # Use pi/4 instead of pi/2
+            front_steering = steering_angle
+            rear_steering = -steering_angle
+            rospy.loginfo("Pure rotation steering: front=%.3f, rear=%.3f (angular_z=%.3f)", front_steering, rear_steering, angular_z)
         else:
             front_steering = 0.0
             rear_steering = 0.0
@@ -109,6 +112,9 @@ class XraySourceSE2Controller:
         steering_cmd.data.rear_steering_angle = rear_steering
         steering_cmd.data.front_steering_angle_velocity = 0.0
         steering_cmd.data.rear_steering_angle_velocity = 0.0
+        
+        rospy.loginfo("Steering command: front=%.3f, rear=%.3f (linear_x=%.3f, angular_z=%.3f)", 
+                      front_steering, rear_steering, linear_x, angular_z)
         
         try:
             self.steering_pub.publish(steering_cmd)
@@ -177,11 +183,16 @@ class XraySourceSE2Controller:
                 self.send_steering_command()
                 return
             
-            # Only angular control for orientation
-            linear_x = 0.0
+            # Angular control for orientation with small linear velocity for rotation
             angular_z = self.kp_angular * yaw_error
             angular_z = max(-self.max_angular_velocity, min(self.max_angular_velocity, angular_z))
-            rospy.loginfo("Orientation control: angular_z=%.3f (kp=%.1f * error=%.3f)", angular_z, self.kp_angular, yaw_error)
+            
+            # Add small linear velocity to enable rotation (like differential drive)
+            linear_x = 0.1  # Small forward velocity to enable rotation
+            if angular_z < 0:
+                linear_x = -0.1  # Backward velocity for negative rotation
+                
+            rospy.loginfo("Orientation control: linear_x=%.3f, angular_z=%.3f (kp=%.1f * error=%.3f)", linear_x, angular_z, self.kp_angular, yaw_error)
 
         # Reduce speed as steering increases for stability (but don't go to zero)
         speed_reduction = abs(angular_z) / self.max_angular_velocity
