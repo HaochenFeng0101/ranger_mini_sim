@@ -9,8 +9,8 @@
    <!-- SE2 Drone Controller (2D only) -->
    <node pkg="se2_control" type="se2_drone_controller.py" name="se2_drone_controller" output="screen" />
 
-   <!-- Trajectory Visualizer -->
-   <node pkg="se2_control" type="trajectory_visualizer.py" name="trajectory_visualizer" output="screen" />
+   <!-- Trajectory Visualizer
+   <node pkg="se2_control" type="trajectory_visualizer.py" name="trajectory_visualizer" output="screen" /> -->
 
    <!-- Test pose publisher (run separately) -->
    <!-- <node name="drone_test_pose_publisher" pkg="se2_control" type="drone_test_pose_publisher.py" output="screen" /> -->

@@ -22,21 +22,34 @@
 
     <!-- Base link -->
     <link name="base_link">
-        <visual>
-            <origin xyz="0 0 0" rpy="1.57 0 3.14 " />
-            <geometry>
-                <mesh filename="package://ranger_mini_v2/meshes/ranger_base.dae" />
-            </geometry>
-            <material name="metallic_grey" />
-        </visual>
+        <inertial>
+            <origin xyz="0.0 0.0 0.0"/>
+            <mass value="7.5"/>
+            <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5"/>
+        </inertial>
         <collision>
             <origin xyz="0 0 -0.1" rpy="0 0 0" />
             <geometry>
                 <box size="0.5 0.35 0.2"/>
             </geometry>
         </collision>
- 
     </link>
+    
+    <!-- Dummy link for mesh orientation -->
+    <link name="base_mesh">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.57 0 3.14" />
+            <geometry>
+                <mesh filename="package://ranger_mini_v2/meshes/ranger_base.dae" />
+            </geometry>
+            <material name="metallic_grey" />
+        </visual>
+    </link>
+    <joint name="base_mesh_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_mesh"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
 
    <link name="fl_steering_wheel_link">
         <inertial>
@@ -64,12 +77,13 @@
             </geometry>
         </collision>
     </link>
-    <joint name="fl_steering_wheel" type="revolute">
+    <joint name="detector_fl_steering_wheel" type="revolute">
         <origin xyz="0.23 0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="fl_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
         <limit effort="5" velocity="6.28"  lower="-2.1" upper="2.1" />
+        <dynamics damping="0.5" friction="0.1"/>
     </joint>
 
         <link name="fl_wheel_link">
@@ -98,11 +112,12 @@
             </collision>
         </link>
 
-        <joint name="fl_wheel" type="continuous">
+        <joint name="detector_fl_wheel" type="continuous">
             <origin xyz="0.03 0.01 -0.12" rpy="0 0 0" />
             <parent link="fl_steering_wheel_link"/>
             <child link="fl_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
+            <dynamics damping="0.5" friction="0.1"/>
         </joint>
 
 
@@ -126,12 +141,13 @@
             </geometry>
         </collision>
     </link>
-    <joint name="fr_steering_wheel" type="revolute">
+    <joint name="detector_fr_steering_wheel" type="revolute">
         <origin xyz="0.23 -0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="fr_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
         <limit effort="5" velocity="6.28"  lower="-2.1" upper="2.1" />
+        <dynamics damping="0.5" friction="0.1"/>
     </joint>
 
         <link name="fr_wheel_link">
@@ -160,11 +176,12 @@
             </collision>
         </link>
 
-        <joint name="fr_wheel" type="continuous">
-            <origin xyz="0.0 0.0 -0.12" rpy="0 0 0" />
+        <joint name="detector_fr_wheel" type="continuous">
+            <origin xyz="0.03 0.01 -0.12" rpy="0 0 0" />
             <parent link="fr_steering_wheel_link"/>
             <child link="fr_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
+            <dynamics damping="0.5" friction="0.1"/>
         </joint>
 
 
@@ -188,12 +205,13 @@
             </geometry>
         </collision>
     </link>
-    <joint name="rl_steering_wheel" type="revolute">
+    <joint name="detector_rl_steering_wheel" type="revolute">
         <origin xyz="-0.23 0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="rl_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
         <limit effort="5" velocity="6.28"  lower="-2.1" upper="2.1" />
+        <dynamics damping="0.5" friction="0.1"/>
     </joint>
 
         <link name="rl_wheel_link">
@@ -222,11 +240,12 @@
             </collision>
         </link>
 
-        <joint name="rl_wheel" type="continuous">
-            <origin xyz="0.0 0.0 -0.12 " rpy="0 0 0" />
+        <joint name="detector_rl_wheel" type="continuous">
+            <origin xyz="0.03 0.01 -0.12" rpy="0 0 0" />
             <parent link="rl_steering_wheel_link"/>
             <child link="rl_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
+            <dynamics damping="0.5" friction="0.1"/>
         </joint>
 
 
@@ -250,12 +269,13 @@
             </geometry>
         </collision>
     </link>
-    <joint name="rr_steering_wheel" type="revolute">
+    <joint name="detector_rr_steering_wheel" type="revolute">
         <origin xyz="-0.23 -0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="rr_steering_wheel_link"/>
         <axis xyz="0 0 1" rpy="0 0 0" />
         <limit effort="5" velocity="6.28"  lower="-2.1" upper="2.1" />
+        <dynamics damping="0.5" friction="0.1"/>
     </joint>
 
         <link name="rr_wheel_link">
@@ -265,7 +285,7 @@
                 <inertia ixx="0.1171" ixy="0" ixz="0" iyy="0.1361" iyz="0" izz="0.1171" />
             </inertial>
             <visual>
-                <origin xyz="0.0 0.0 0.0" rpy="1.57 0 0" />
+                <origin xyz="0 0 0" rpy="1.57 0 0" />
                 <geometry>
                     <cylinder length="0.01" radius="0.01" />
                 </geometry>
@@ -284,11 +304,12 @@
             </collision>
         </link>
 
-        <joint name="rr_wheel" type="continuous">
-            <origin xyz="0.0 0.0 -0.12 " rpy="0 0 0" />
+        <joint name="detector_rr_wheel" type="continuous">
+            <origin xyz="0.03 0.01 -0.12" rpy="0 0 0" />
             <parent link="rr_steering_wheel_link"/>
             <child link="rr_wheel_link"/>
             <axis xyz="0 1 0" rpy="0 0 0" />
+            <dynamics damping="0.5" friction="0.1"/>
         </joint>
 
     <!-- Detector Board 1 - Connected to leg1 -->
@@ -338,55 +359,55 @@
     <!-- Detector Board Support Frame - Two thin legs connected to base -->
     <link name="detector_support_leg1">
         <inertial>
-            <origin xyz="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.3"/>
             <mass value="0.35"/>
             <inertia ixx="0.015" ixy="0.0" ixz="0.0" iyy="0.015" iyz="0.0" izz="0.015"/>
         </inertial>
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0.3" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.9" />
+                <box size="0.02 0.02 0.8" />
             </geometry>
             <material name="dark_grey" />
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0.3" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.9" />
+                <box size="0.02 0.02 0.8" />
             </geometry>
         </collision>
     </link>
 
     <link name="detector_support_leg2">
         <inertial>
-            <origin xyz="0.0 0.0 0.0"/>
+            <origin xyz="0.0 0.0 0.3"/>
             <mass value="0.35"/>
             <inertia ixx="0.015" ixy="0.0" ixz="0.0" iyy="0.015" iyz="0.0" izz="0.015"/>
         </inertial>
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0.3" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.9" />
+                <box size="0.02 0.02 0.8" />
             </geometry>
             <material name="dark_grey" />
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0.3" rpy="0 0 0" />
             <geometry>
-                <box size="0.02 0.02 0.9" />
+                <box size="0.02 0.02 0.8" />
             </geometry>
         </collision>
     </link>
 
-    <!-- Two support legs connected to base (front left and front right) -->
+    <!-- Two support legs connected to base (surface positions) -->
     <joint name="detector_support_leg1_joint" type="fixed">
-        <origin xyz="0.15 0.1 0.2" rpy="0 0 0" />
+        <origin xyz="0.15 0.0 0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="detector_support_leg1"/>
     </joint>
 
     <joint name="detector_support_leg2_joint" type="fixed">
-        <origin xyz="-0.15 0.1 0.2" rpy="0 0 0" />
+        <origin xyz="-0.15 0.0 0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="detector_support_leg2"/>
     </joint>
@@ -407,100 +428,94 @@
 
 
 
-	<transmission name="fl_steering_wheel_trans">
+	<transmission name="detector_fl_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fl_steering_wheel">
+      <joint name="detector_fl_steering_wheel">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="fl_steering_wheel_motor">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-		<mechanicalReduction>30</mechanicalReduction>
-      </actuator>
-	</transmission>
-
-	<transmission name="fr_steering_wheel_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fr_steering_wheel">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-	  <actuator name="fr_steering_wheel_motor">
+	  <actuator name="detector_fl_steering_wheel_motor">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="rl_steering_wheel_trans">
+	<transmission name="detector_fr_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rl_steering_wheel">
+      <joint name="detector_fr_steering_wheel">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="rl_steering_wheel_motor">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-		<mechanicalReduction>30</mechanicalReduction>
-      </actuator>
-	</transmission>
-
-	<transmission name="rr_steering_wheel_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rr_steering_wheel">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-	  <actuator name="rr_steering_wheel_motor">
+	  <actuator name="detector_fr_steering_wheel_motor">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="fl_wheel_trans">
+	<transmission name="detector_rl_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fl_wheel">
+      <joint name="detector_rl_steering_wheel">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+	  <actuator name="detector_rl_steering_wheel_motor">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+		<mechanicalReduction>30</mechanicalReduction>
+      </actuator>
+	</transmission>
+
+	<transmission name="detector_rr_steering_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="detector_rr_steering_wheel">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+	  <actuator name="detector_rr_steering_wheel_motor">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+		<mechanicalReduction>30</mechanicalReduction>
+      </actuator>
+	</transmission>
+
+	<transmission name="detector_fl_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="detector_fl_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="fl_wheel_motor">
+	  <actuator name="detector_fl_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="fr_wheel_trans">
+	<transmission name="detector_fr_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fr_wheel">
+      <joint name="detector_fr_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="fr_wheel_motor">
+	  <actuator name="detector_fr_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="rl_wheel_trans">
+	<transmission name="detector_rl_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rl_wheel">
+      <joint name="detector_rl_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="rl_wheel_motor">
+	  <actuator name="detector_rl_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="rr_wheel_trans">
+	<transmission name="detector_rr_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rr_wheel">
+      <joint name="detector_rr_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="rr_wheel_motor">
+	  <actuator name="detector_rr_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
-  <gazebo reference="detector_board">
-    <material>Gazebo/Blue</material>
-  </gazebo>
 
-  <gazebo reference="detector_support">
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
 
 
 

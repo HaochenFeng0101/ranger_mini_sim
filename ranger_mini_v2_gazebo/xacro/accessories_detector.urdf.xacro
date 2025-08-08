@@ -12,72 +12,68 @@
   <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories/camera_mount.urdf.xacro" />
 
   <!-- 3D LiDAR - Velodyne VLP-16 -->
-  <xacro:if value="$(optenv RANGER_LASER_3D 1)">
-    <xacro:property name="mount" value="$(optenv RANGER_LASER_3D_MOUNT mid)" />
-    <xacro:property name="topic" value="$(optenv RANGER_LASER_3D_TOPIC detector/points)" />
-    <xacro:property name="tower" value="$(optenv RANGER_LASER_3D_TOWER 1)" />
-    <xacro:property name="prefix" value="$(optenv RANGER_LASER_3D_PREFIX detector_${mount})" />
-    <xacro:property name="parent" value="$(optenv RANGER_LASER_3D_PARENT base_link)" />
-    <xacro:property name="lidar_3d_model" value="$(optenv RANGER_LASER_3D_MODEL vlp16)" />
-    
-    <!-- Velodyne VLP16 -->
-    <xacro:if value="${lidar_3d_model == 'vlp16'}">
-      <xacro:vlp16_mount topic="${topic}" tower="${tower}" prefix="${prefix}" parent_link="${parent}" >
-        <origin xyz="$(optenv RANGER_LASER_3D_OFFSET 0 0 0.0)" rpy="$(optenv RANGER_LASER_3D_RPY 0 0 0)" />
-      </xacro:vlp16_mount>
-    </xacro:if>
+  <xacro:property name="mount" value="mid" />
+  <xacro:property name="topic" value="detector/points" />
+  <xacro:property name="tower" value="1" />
+  <xacro:property name="prefix" value="detector_${mount}" />
+  <xacro:property name="parent" value="base_link" />
+  <xacro:property name="lidar_3d_model" value="vlp16" />
+  
+  <!-- Velodyne VLP16 -->
+  <xacro:if value="${lidar_3d_model == 'vlp16'}">
+    <xacro:vlp16_mount topic="${topic}" tower="${tower}" prefix="${prefix}" parent_link="${parent}" >
+      <origin xyz="0 0 0.0" rpy="0 0 0" />
+    </xacro:vlp16_mount>
   </xacro:if>
 
   <!-- Front Camera - Same as source robot -->
-  <xacro:if value="$(optenv RANGER_CAMERA 1)">
-    <xacro:property name="mount" value="$(optenv RANGER_CAMERA_MOUNT front)" />
-    <xacro:property name="topic" value="$(optenv RANGER_CAMERA_TOPIC detector/image_raw)" />
-    <xacro:property name="prefix" value="$(optenv RANGER_CAMERA_PREFIX detector_${mount})" />
-    <xacro:property name="parent" value="$(optenv RANGER_CAMERA_PARENT base_link)" />
-    <xacro:property name="tilt" value="$(optenv RANGER_CAMERA_TILT 0)" />
-    
-    <!-- Camera mount - same as source robot -->
-    <xacro:camera_mount prefix="${prefix}" parent_link="${parent}">
-      <origin xyz="0.2 0 0.01" rpy="0 0 0" />
-    </xacro:camera_mount>
-    
-    <!-- Camera Gazebo plugin -->
-    <gazebo reference="${prefix}_camera">
-      <sensor type="camera" name="${prefix}_camera_sensor">
-        <update_rate>30.0</update_rate>
-        <camera name="${prefix}_camera">
-          <horizontal_fov>1.3962634</horizontal_fov>
-          <image>
-            <width>640</width>
-            <height>480</height>
-            <format>R8G8B8</format>
-          </image>
-          <clip>
-            <near>0.02</near>
-            <far>300</far>
-          </clip>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.007</stddev>
-          </noise>
-        </camera>
-        <plugin name="${prefix}_camera_controller" filename="libgazebo_ros_camera.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
-          <cameraName>${prefix}</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>${prefix}_camera</frameName>
-          <hackBaseline>0.07</hackBaseline>
-          <distortionK1>0.0</distortionK1>
-          <distortionK2>0.0</distortionK2>
-          <distortionK3>0.0</distortionK3>
-          <distortionT1>0.0</distortionT1>
-          <distortionT2>0.0</distortionT2>
-        </plugin>
-      </sensor>
-    </gazebo>
-  </xacro:if>
+  <xacro:property name="mount" value="front" />
+  <xacro:property name="topic" value="detector/image_raw" />
+  <xacro:property name="prefix" value="detector_${mount}" />
+  <xacro:property name="parent" value="base_link" />
+  <xacro:property name="tilt" value="0" />
+  
+  <!-- Camera mount - same as source robot -->
+  <xacro:camera_mount prefix="${prefix}" parent_link="${parent}">
+    <origin xyz="0.2 0 0.01" rpy="0 0 0" />
+  </xacro:camera_mount>
+  
+  <!-- Camera Gazebo plugin -->
+  <gazebo reference="${prefix}_camera">
+    <sensor type="camera" name="${prefix}_camera_sensor">
+      <update_rate>30.0</update_rate>
+      <camera name="${prefix}_camera">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="${prefix}_camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>${prefix}</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>${prefix}_camera</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
 
 </robot> 

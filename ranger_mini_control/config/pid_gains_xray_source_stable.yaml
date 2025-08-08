@@ -1,35 +1,35 @@
 xray_source:
   gazebo_ros_control:
     pid_gains:
-      fl_steering_wheel:
+      source_fl_steering_wheel:
         p: 1000.0
         i: 0.1
         d: 10.0
-      fr_steering_wheel:
+      source_fr_steering_wheel:
         p: 1000.0
         i: 0.1
         d: 10.0
-      rl_steering_wheel:
+      source_rl_steering_wheel:
         p: 1000.0
         i: 0.1
         d: 10.0
-      rr_steering_wheel:
+      source_rr_steering_wheel:
         p: 1000.0
         i: 0.1
         d: 10.0
-      fl_wheel:
+      source_fl_wheel:
         p: 1.0
         i: 0.01
         d: 0.1
-      fr_wheel:
+      source_fr_wheel:
         p: 1.0
         i: 0.01
         d: 0.1
-      rl_wheel:
+      source_rl_wheel:
         p: 1.0
         i: 0.01
         d: 0.1
-      rr_wheel:
+      source_rr_wheel:
         p: 1.0
         i: 0.01
         d: 0.1 

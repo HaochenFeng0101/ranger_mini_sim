@@ -77,7 +77,7 @@
             </geometry>
         </collision>
     </link>
-    <joint name="fl_steering_wheel" type="revolute">
+    <joint name="source_fl_steering_wheel" type="revolute">
         <origin xyz="0.23 0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="fl_steering_wheel_link"/>
@@ -113,7 +113,7 @@
             </surface>
         </collision>
     </link>
-    <joint name="fl_wheel" type="continuous">
+    <joint name="source_fl_wheel" type="continuous">
         <origin xyz="0.03 0.01 -0.12" rpy="0 0 0" />
         <parent link="fl_steering_wheel_link"/>
         <child link="fl_wheel_link"/>
@@ -142,7 +142,7 @@
             </geometry>
         </collision>
     </link>
-    <joint name="fr_steering_wheel" type="revolute">
+    <joint name="source_fr_steering_wheel" type="revolute">
         <origin xyz="0.23 -0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="fr_steering_wheel_link"/>
@@ -178,7 +178,7 @@
             </surface>
         </collision>
     </link>
-    <joint name="fr_wheel" type="continuous">
+    <joint name="source_fr_wheel" type="continuous">
         <origin xyz="0.0 0.0 -0.12" rpy="0 0 0" />
         <parent link="fr_steering_wheel_link"/>
         <child link="fr_wheel_link"/>
@@ -206,7 +206,7 @@
             </geometry>
         </collision>
     </link>
-    <joint name="rl_steering_wheel" type="revolute">
+    <joint name="source_rl_steering_wheel" type="revolute">
         <origin xyz="-0.23 0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="rl_steering_wheel_link"/>
@@ -242,7 +242,7 @@
             </surface>
         </collision>
     </link>
-    <joint name="rl_wheel" type="continuous">
+    <joint name="source_rl_wheel" type="continuous">
         <origin xyz="0.0 0.0 -0.12 " rpy="0 0 0" />
         <parent link="rl_steering_wheel_link"/>
         <child link="rl_wheel_link"/>
@@ -270,7 +270,7 @@
             </geometry>
         </collision>
     </link>
-    <joint name="rr_steering_wheel" type="revolute">
+    <joint name="source_rr_steering_wheel" type="revolute">
         <origin xyz="-0.23 -0.206 -0.1" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="rr_steering_wheel_link"/>
@@ -306,7 +306,7 @@
             </surface>
         </collision>
     </link>
-    <joint name="rr_wheel" type="continuous">
+    <joint name="source_rr_wheel" type="continuous">
         <origin xyz="0.0 0.0 -0.12 " rpy="0 0 0" />
         <parent link="rr_steering_wheel_link"/>
         <child link="rr_wheel_link"/>
@@ -342,89 +342,89 @@
         <child link="source_support_cylinder"/>
     </joint>
 
-	<transmission name="fl_steering_wheel_trans">
+	<transmission name="source_fl_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fl_steering_wheel">
+      <joint name="source_fl_steering_wheel">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="fl_steering_wheel_motor">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-		<mechanicalReduction>30</mechanicalReduction>
-      </actuator>
-	</transmission>
-
-	<transmission name="fr_steering_wheel_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fr_steering_wheel">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-	  <actuator name="fr_steering_wheel_motor">
+	  <actuator name="source_fl_steering_wheel_motor">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="rl_steering_wheel_trans">
+	<transmission name="source_fr_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rl_steering_wheel">
+      <joint name="source_fr_steering_wheel">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="rl_steering_wheel_motor">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-		<mechanicalReduction>30</mechanicalReduction>
-      </actuator>
-	</transmission>
-
-	<transmission name="rr_steering_wheel_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rr_steering_wheel">
-		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-	  <actuator name="rr_steering_wheel_motor">
+	  <actuator name="source_fr_steering_wheel_motor">
 		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="fl_wheel_trans">
+	<transmission name="source_rl_steering_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fl_wheel">
+      <joint name="source_rl_steering_wheel">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+	  <actuator name="source_rl_steering_wheel_motor">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+		<mechanicalReduction>30</mechanicalReduction>
+      </actuator>
+	</transmission>
+
+	<transmission name="source_rr_steering_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="source_rr_steering_wheel">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+	  <actuator name="source_rr_steering_wheel_motor">
+		<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+		<mechanicalReduction>30</mechanicalReduction>
+      </actuator>
+	</transmission>
+
+	<transmission name="source_fl_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="source_fl_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="fl_wheel_motor">
+	  <actuator name="source_fl_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="fr_wheel_trans">
+	<transmission name="source_fr_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="fr_wheel">
+      <joint name="source_fr_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="fr_wheel_motor">
+	  <actuator name="source_fr_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="rl_wheel_trans">
+	<transmission name="source_rl_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rl_wheel">
+      <joint name="source_rl_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="rl_wheel_motor">
+	  <actuator name="source_rl_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
 	</transmission>
 
-	<transmission name="rr_wheel_trans">
+	<transmission name="source_rr_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="rr_wheel">
+      <joint name="source_rr_wheel">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-	  <actuator name="rr_wheel_motor">
+	  <actuator name="source_rr_wheel_motor">
 		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
 		<mechanicalReduction>30</mechanicalReduction>
       </actuator>
