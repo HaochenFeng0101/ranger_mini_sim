@@ -10,7 +10,20 @@ def move_target():
     # Publisher for target velocity commands
     target_pub = rospy.Publisher('/target_manual_twist', Twist, queue_size=1)
     
-    rospy.sleep(1.0)  # Wait for connection
+    # Wait for connection and check if system is running
+    rospy.sleep(1.0)
+    
+    # Check if the target topic has subscribers
+    if target_pub.get_num_connections() == 0:
+        print("\nERROR: No subscribers to /target_manual_twist topic!")
+        print("Make sure you have launched the encirclement system first:")
+        print("  roslaunch se2_control simple_encirclement.launch")
+        print("  OR")
+        print("  roslaunch se2_control range_based_encirclement.launch")
+        print("\nThe target drone (drone2) must be running to receive commands.")
+        return
+    
+    print(f"✓ Connected to {target_pub.get_num_connections()} subscriber(s)")
     
     if len(sys.argv) < 2:
         print("\nUsage:")
@@ -55,10 +68,14 @@ def move_target():
         print("Moving target in circle")
     elif command == "custom":
         if len(sys.argv) >= 5:
-            twist.linear.x = float(sys.argv[2])
-            twist.linear.y = float(sys.argv[3])
-            twist.angular.z = float(sys.argv[4])
-            print(f"Custom movement: vx={twist.linear.x}, vy={twist.linear.y}, vyaw={twist.angular.z}")
+            try:
+                twist.linear.x = float(sys.argv[2])
+                twist.linear.y = float(sys.argv[3])
+                twist.angular.z = float(sys.argv[4])
+                print(f"Custom movement: vx={twist.linear.x}, vy={twist.linear.y}, vyaw={twist.angular.z}")
+            except ValueError:
+                print("Error: Custom velocities must be valid numbers")
+                return
         else:
             print("Custom command needs 3 values: vx vy vyaw")
             return
@@ -68,6 +85,8 @@ def move_target():
     
     # Send command for 5 seconds
     rate = rospy.Rate(10)  # 10Hz
+    print("Executing command for 5 seconds...")
+    
     for i in range(50):  # 5 seconds
         if rospy.is_shutdown():
             break
@@ -76,6 +95,7 @@ def move_target():
     
     # Stop the target
     stop_twist = Twist()
+    print("Stopping target...")
     for i in range(10):
         target_pub.publish(stop_twist)
         rate.sleep()

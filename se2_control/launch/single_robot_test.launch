@@ -1,0 +1,39 @@
+<launch>
+  <!-- Single Robot Test Launch File - Test just one robot with individual joint controllers for MPC -->
+  
+  <!-- Load robot description -->
+  <param name="xray_source/robot_description"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_source.xacro'" />
+
+  <!-- Start Gazebo with empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" />
+
+  <!-- Spawn just the X-ray source robot -->
+  <node name="spawn_xray_source" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param xray_source/robot_description -model xray_source_robot -x 0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        output="screen" />
+
+  <!-- Load controller parameters -->
+  <rosparam file="$(find ranger_mini_control)/config/controller_xray_source.yaml" command="load" ns="xray_source"/>
+
+  <!-- Start four_wheel_steering_controller for MPC control -->
+  <node name="xray_source_controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller four_wheel_steering_controller" 
+        ns="xray_source" output="screen" />
+
+  <!-- Start robot state publisher -->
+  <node name="xray_source_robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher">
+    <remap from="joint_states" to="xray_source/joint_states"/>
+    <remap from="robot_description" to="xray_source/robot_description"/>
+  </node>
+
+  <!-- Static transform publisher -->
+  <node name="xray_source_static_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 map xray_source/base_link 100" />
+
+  <!-- Start the test script for MPC testing -->
+  <node pkg="se2_control" type="test_single_robot_target.py" name="single_robot_tester" output="screen" />
+
+</launch>

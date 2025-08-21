@@ -1,0 +1,142 @@
+<launch>
+  <!-- Bed Trolley Encirclement System with MPC Control - Modified for MPC Test Compatibility -->
+  
+  <!-- Load robot descriptions for spawning and RViz -->
+  <!-- Namespaced robot descriptions for Gazebo spawning -->
+  <param name="xray_source/robot_description"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_source.xacro'" />
+  
+  <param name="bed_trolley/robot_description"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
+  
+  <param name="xray_detector/robot_description"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_detector.xacro'" />
+
+  <!-- Global robot descriptions for RViz (required by RViz config) -->
+  <param name="robot_description_xray_source"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_source.xacro'" />
+  
+  <param name="robot_description_bed_trolley"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_bed_trolly.xacro'" />
+  
+  <param name="robot_description_xray_detector"
+         command="$(find xacro)/xacro '$(find ranger_mini_v2_gazebo)/xacro/ranger_mini_xray_detector.xacro'" />
+
+  <!-- Start Gazebo with empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+  
+  <!-- Spawn the X-ray source robot (Encircling Agent 1) - More separation -->
+  <node name="spawn_xray_source" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param xray_source/robot_description -model xray_source_robot -x -2.0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        output="screen" />
+
+  <!-- Spawn the Bed trolley robot (Center/Target) - At origin -->
+  <node name="spawn_bed_trolley" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param bed_trolley/robot_description -model bed_trolley_robot -x 0.0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        output="screen" />
+
+  <!-- Spawn the X-ray detector robot (Encircling Agent 2) - More separation -->
+  <node name="spawn_xray_detector" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param xray_detector/robot_description -model xray_detector_robot -x 2.0 -y 0 -z 0.4 -R 0.0 -P 0.0 -Y 0.0"
+        output="screen" />
+
+  <!-- Load controller parameters for X-ray source -->
+  <rosparam file="$(find ranger_mini_control)/config/controller_xray_source.yaml" command="load" ns="xray_source"/>
+  <!-- REMOVED PID gains - using MPC instead -->
+
+  <!-- Load controller parameters for Bed trolley -->
+  <rosparam file="$(find ranger_mini_control)/config/controller_bed_trolley.yaml" command="load" ns="bed_trolley"/>
+  <!-- REMOVED PID gains - using MPC instead -->
+
+  <!-- Load controller parameters for X-ray detector -->
+  <rosparam file="$(find ranger_mini_control)/config/controller_xray_detector.yaml" command="load" ns="xray_detector"/>
+  <!-- REMOVED PID gains - using MPC instead -->
+
+  <!-- Start controller spawners with better error handling -->
+  <node name="xray_source_controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller four_wheel_steering_controller" ns="xray_source" output="screen" 
+        respawn="true" respawn_delay="2" />
+
+  <node name="bed_trolley_controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller four_wheel_steering_controller" ns="bed_trolley" output="screen" 
+        respawn="true" respawn_delay="2" />
+
+  <node name="xray_detector_controller_spawner" pkg="controller_manager" type="spawner"
+        args="joint_state_controller four_wheel_steering_controller" ns="xray_detector" output="screen" 
+        respawn="true" respawn_delay="2" />
+
+  <!-- Start robot state publishers -->
+  <node name="xray_source_robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher">
+    <remap from="joint_states" to="xray_source/joint_states"/>
+    <remap from="robot_description" to="xray_source/robot_description"/>
+  </node>
+
+  <node name="bed_trolley_robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher">
+    <remap from="joint_states" to="bed_trolley/joint_states"/>
+    <remap from="robot_description" to="bed_trolley/robot_description"/>
+  </node>
+
+  <node name="xray_detector_robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher">
+    <remap from="joint_states" to="xray_detector/joint_states"/>
+    <remap from="robot_description" to="xray_detector/robot_description"/>
+  </node>
+
+  <!-- Static transform publishers for each robot - Updated for new positions -->
+  <node name="xray_source_static_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="-2.0 0 0 0 0 0 map xray_source/base_link 100" />
+
+  <node name="bed_trolley_static_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0.0 0 0 0 0 0 map bed_trolley/base_link 100" />
+
+  <node name="xray_detector_static_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="2.0 0 0 0 0 0 map xray_detector/base_link 100" />
+
+  <!-- Start MPC Controllers for Encirclement System -->
+  <node pkg="se2_control" type="xray_source_mpc_controller.py" name="xray_source_mpc_controller" output="screen" />
+  
+  <node pkg="se2_control" type="bed_trolley_mpc_controller.py" name="bed_trolley_mpc_controller" output="screen" />
+  
+  <node pkg="se2_control" type="xray_detector_mpc_controller.py" name="xray_detector_mpc_controller" output="screen" />
+
+  <!-- Fallback: If MPC fails, uncomment these simple controllers -->
+  <!-- <node pkg="se2_control" type="simple_mpc_controller.py" name="xray_source_simple_mpc" output="screen">
+    <param name="robot_name" value="xray_source"/>
+  </node>
+  <node pkg="se2_control" type="simple_mpc_controller.py" name="xray_detector_simple_mpc" output="screen">
+    <param name="robot_name" value="xray_detector"/>
+  </node> -->
+
+  <!-- Start Bed Trolley Encirclement Controller -->
+  <node pkg="se2_control" type="bed_trolley_encirclement_mpc.py" 
+        name="bed_trolley_encirclement_mpc" output="screen" />
+
+  <!-- Start odom_to_path nodes for trajectory visualization -->
+  <node name="xray_source_odom_to_path" pkg="se2_control" type="odom_to_path.py" output="screen">
+    <remap from="odom" to="xray_source/four_wheel_steering_controller/odom"/>
+    <remap from="path" to="xray_source/path"/>
+  </node>
+
+  <node name="bed_trolley_odom_to_path" pkg="se2_control" type="odom_to_path.py" output="screen">
+    <remap from="odom" to="bed_trolley/four_wheel_steering_controller/odom"/>
+    <remap from="path" to="bed_trolley/path"/>
+  </node>
+
+  <node name="xray_detector_odom_to_path" pkg="se2_control" type="odom_to_path.py" output="screen">
+    <remap from="odom" to="xray_detector/four_wheel_steering_controller/odom"/>
+    <remap from="path" to="xray_detector/path"/>
+  </node>
+
+
+</launch>

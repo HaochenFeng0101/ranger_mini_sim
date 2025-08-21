@@ -522,13 +522,6 @@
   <!-- Include accessories (3D LiDAR and camera) -->
   <xacro:include filename="$(find ranger_mini_v2_gazebo)/xacro/accessories_detector.urdf.xacro" />
 
-  <!-- Gazebo ROS Control Plugin -->
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/xray_detector</robotNamespace>
-              <robotParam>robot_description</robotParam>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
-  </gazebo>
+  <!-- NO GAZEBO ROS CONTROL PLUGIN - Using MPC controllers instead -->
 
 </robot> 

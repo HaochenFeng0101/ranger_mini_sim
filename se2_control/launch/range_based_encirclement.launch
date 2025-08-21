@@ -1,5 +1,6 @@
 <launch>
-  <!-- Simple Three Drone Encirclement System -->
+  <!-- Range-Based Three Drone Encirclement System -->
+  <!-- This system achieves coordination using only LiDAR-like range measurements -->
   
   <!-- Drone 0 Simulator (Agent 1 - Red) -->
   <group ns="drone0">
@@ -8,6 +9,9 @@
       <param name="initial_y" value="0.0"/>
       <param name="initial_yaw" value="0.0"/>
     </node>
+    
+    <!-- Range sensor simulator for drone0 -->
+    <node pkg="se2_control" type="range_sensor_simulator.py" name="range_sensor_simulator" output="screen"/>
   </group>
   
   <!-- Drone 1 Simulator (Agent 2 - Green) -->
@@ -17,6 +21,9 @@
       <param name="initial_y" value="0.0"/>
       <param name="initial_yaw" value="0.0"/>
     </node>
+    
+    <!-- Range sensor simulator for drone1 -->
+    <node pkg="se2_control" type="range_sensor_simulator.py" name="range_sensor_simulator" output="screen"/>
   </group>
   
   <!-- Target Drone (SE2 Target - Blue) -->
@@ -26,10 +33,13 @@
       <param name="initial_y" value="2.0"/>
       <param name="initial_yaw" value="0.0"/>
     </node>
+    
+    <!-- Range sensor simulator for target drone -->
+    <node pkg="se2_control" type="range_sensor_simulator.py" name="range_sensor_simulator" output="screen"/>
   </group>
   
-  <!-- Simple Encirclement Controller -->
-  <node pkg="se2_control" type="simple_encirclement.py" name="simple_encirclement" output="screen" />
+  <!-- Range-Based Encirclement Controller -->
+  <node pkg="se2_control" type="range_based_encirclement.py" name="range_based_encirclement" output="screen" />
   
   <!-- Target Manual Controller (for moving the target) -->
   <node pkg="se2_control" type="target_manual_controller.py" name="target_manual_controller" output="screen" />
