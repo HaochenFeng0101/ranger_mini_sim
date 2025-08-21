@@ -236,66 +236,74 @@ class RangeBasedEncirclement:
         return vx, vy, vyaw
     
     def calculate_encirclement_control(self, robot_name, target_range, target_angle, other_agent_range, other_agent_angle):
-        """Calculate stable control commands for encirclement - prevents oscillation"""
+        """Calculate PROPER encirclement control using radial and tangential components"""
         
-        # SIMPLIFIED CONTROL LOGIC: Focus on one objective at a time to prevent conflicts
+        # PROPER ENCIRCLEMENT PHYSICS: Use radial-tangential coordinate system
         
-        # 1. PRIMARY: Distance control to target
+        # 1. RADIAL CONTROL: Move towards/away from target to maintain desired distance
         distance_error = target_range - self.target_distance
-        if abs(distance_error) < 0.3:  # Increased deadzone for stability
+        if abs(distance_error) < 0.2:  # Small deadzone
             distance_error = 0.0
         
-        # 2. SECONDARY: Angular positioning (encirclement)
-        # Use formation direction to determine desired angle
-        desired_angle = self.formation_angles[robot_name]
-        angle_error = target_angle - desired_angle
+        # Radial velocity (towards/away from target)
+        v_radial = self.kp_distance * distance_error
         
-        # Normalize angle error to [-pi, pi]
-        while angle_error > math.pi:
-            angle_error -= 2 * math.pi
-        while angle_error < -math.pi:
-            angle_error += 2 * math.pi
+        # 2. TANGENTIAL CONTROL: Circular motion around target
+        # Base tangential velocity for circular motion
+        v_tangential_base = 0.3  # Base circular velocity
         
-        # 3. TERTIARY: Formation spacing (only if significant)
-        formation_vel = 0.0
+        # Direction depends on formation direction (clockwise/counterclockwise)
+        formation_direction = self.formation_directions.get(robot_name, 1.0)
+        v_tangential = v_tangential_base * formation_direction
+        
+        # 3. FORMATION SPACING: Adjust tangential velocity based on other agent
         if other_agent_range is not None:
             formation_error = other_agent_range - self.formation_spacing
-            if abs(formation_error) > 0.5:  # Larger deadzone for formation
-                formation_vel = 0.3 * formation_error  # Reduced gain
+            # If too close to other agent, slow down; if too far, speed up
+            v_tangential += -0.2 * formation_error * formation_direction
         
-        # CALCULATE VELOCITIES with priority system
-        # Forward velocity: primarily distance control
-        vx = self.kp_distance * distance_error
+        # 4. CONVERT TO ROBOT FRAME: Radial-tangential to vx-vy
+        # target_angle is the angle to target in robot frame
         
-        # Lateral velocity: primarily angular control, secondary formation
-        vy = self.kp_angle * angle_error + 0.2 * formation_vel
+        # Radial direction: towards target
+        radial_x = math.cos(target_angle)
+        radial_y = math.sin(target_angle)
         
-        # Yaw rate: point toward target (smooth)
-        vyaw = 0.2 * target_angle  # Reduced gain for stability
+        # Tangential direction: perpendicular to radial (for circular motion)
+        tangential_x = -math.sin(target_angle)  # Perpendicular to radial
+        tangential_y = math.cos(target_angle)
         
-        # VELOCITY SMOOTHING: Apply smoothing to prevent oscillation
+        # Combine radial and tangential components
+        vx = v_radial * radial_x + v_tangential * tangential_x
+        vy = v_radial * radial_y + v_tangential * tangential_y
+        
+        # 5. YAW CONTROL: Point towards target
+        vyaw = 0.3 * target_angle  # Proportional control to face target
+        
+        # 6. VELOCITY LIMITING: Prevent extreme values
+        max_vel = 0.6  # Reasonable velocity limit
+        vx = max(-max_vel, min(max_vel, vx))
+        vy = max(-max_vel, min(max_vel, vy))
+        vyaw = max(-0.8, min(0.8, vyaw))  # Allow faster yaw for alignment
+        
+        # 7. MINIMUM MOVEMENT: Ensure some movement to prevent getting stuck
+        min_vel = 0.05
+        if abs(vx) < min_vel and abs(vy) < min_vel:
+            # Force minimal tangential movement for encirclement
+            vx = min_vel * tangential_x
+            vy = min_vel * tangential_y
+            rospy.logdebug(f"{robot_name}: Applying minimum tangential movement")
+        
+        # Store velocities for next iteration (light smoothing only)
         prev_vel = self.previous_velocities[robot_name]
-        vx = self.velocity_smoothing * prev_vel['vx'] + (1 - self.velocity_smoothing) * vx
-        vy = self.velocity_smoothing * prev_vel['vy'] + (1 - self.velocity_smoothing) * vy
-        vyaw = self.velocity_smoothing * prev_vel['vyaw'] + (1 - self.velocity_smoothing) * vyaw
+        smoothing = 0.3  # Light smoothing for encirclement
+        vx = smoothing * prev_vel['vx'] + (1 - smoothing) * vx
+        vy = smoothing * prev_vel['vy'] + (1 - smoothing) * vy
+        vyaw = smoothing * prev_vel['vyaw'] + (1 - smoothing) * vyaw
         
-        # Store current velocities for next iteration
         self.previous_velocities[robot_name] = {'vx': vx, 'vy': vy, 'vyaw': vyaw}
         
-        # VELOCITY LIMITING: Prevent extreme values
-        max_individual_vel = 0.8  # Individual velocity limit
-        vx = max(-max_individual_vel, min(max_individual_vel, vx))
-        vy = max(-max_individual_vel, min(max_individual_vel, vy))
-        vyaw = max(-0.5, min(0.5, vyaw))  # Limit yaw rate
-        
-        # MINIMUM MOVEMENT: Ensure some movement to prevent getting stuck
-        min_vel = 0.1
-        if abs(vx) < min_vel and abs(vy) < min_vel:
-            # Gentle forward movement in formation direction
-            vx = min_vel * self.formation_directions.get(robot_name, 1.0)
-            rospy.logdebug(f"{robot_name}: Applying minimum movement vx={vx:.2f}")
-        
-        rospy.logdebug(f"{robot_name}: Control - distance_err={distance_error:.2f}, angle_err={angle_error:.2f}, vx={vx:.2f}, vy={vy:.2f}, vyaw={vyaw:.2f}")
+        rospy.logdebug(f"{robot_name}: Encirclement - radial={v_radial:.2f}, tangential={v_tangential:.2f}, vx={vx:.2f}, vy={vy:.2f}, vyaw={vyaw:.2f}")
         
         return vx, vy, vyaw
     
