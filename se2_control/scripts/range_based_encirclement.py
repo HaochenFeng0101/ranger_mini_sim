@@ -44,7 +44,7 @@ class RangeBasedEncirclement:
         }
         
         # Search parameters
-        self.search_angular_vel = 0.8
+        self.search_angular_vel = 1.2  # Increased from 0.8 for more aggressive search
         self.last_target_seen = {
             'drone0': rospy.Time.now(),
             'drone1': rospy.Time.now()
@@ -65,6 +65,10 @@ class RangeBasedEncirclement:
             'drone1': {'vx': [], 'vy': [], 'vyaw': []}
         }
         self.max_history_length = 10  # Track last 10 velocity values
+        
+        # Robot states (relative measurements only)
+        self.robot_measurements = {}    # Store range measurements for each robot
+        self.relative_poses = {}        # Store relative pose information
         
         # Setup publishers and subscribers
         self.setup_communication()
@@ -149,8 +153,8 @@ class RangeBasedEncirclement:
                 continue
             
             # Look for objects within reasonable target distance (not too close, not too far)
-            # More flexible detection range
-            if 0.5 < range_val < 25.0 and range_val < min_range:
+            # Very flexible detection range to catch all possible drones
+            if 0.2 < range_val < 30.0 and range_val < min_range:
                 min_range = range_val
                 min_angle = laser.angle_min + i * laser.angle_increment
         
@@ -193,34 +197,33 @@ class RangeBasedEncirclement:
         return min(formation_candidates, key=lambda x: abs(x[0] - self.formation_spacing))
     
     def should_search_for_target(self, robot_name):
-        """Determine if robot should search for target - more aggressive"""
+        """Determine if robot should search for target - IMMEDIATE search when no drones visible"""
+        # IMMEDIATE SEARCH: If we haven't seen the target recently, start searching immediately
         if robot_name not in self.last_target_seen:
             rospy.loginfo(f"{robot_name}: No last seen time recorded - starting search immediately")
             return True
         
         time_since_last_seen = (rospy.Time.now() - self.last_target_seen[robot_name]).to_sec()
-        should_search = time_since_last_seen > 3.0  # Reduced from 10.0 to 3.0 seconds
+        
+        # IMMEDIATE SEARCH: Start searching after only 0.5 seconds (was 1.0)
+        should_search = time_since_last_seen > 0.5
         
         rospy.loginfo(f"{robot_name}: Time since last target seen: {time_since_last_seen:.1f}s, should_search: {should_search}")
         
-        # More aggressive search - start searching sooner
         return should_search
     
     def calculate_search_behavior(self, robot_name):
-        """Calculate stable search behavior when target is not visible"""
-        # STABLE SEARCH: Avoid oscillation by using consistent movement
+        """Calculate MAXIMUM AGGRESSIVE search behavior when target is not visible"""
+        # MAXIMUM AGGRESSIVE SEARCH: Strong rotation with NO smoothing for immediate response
         
-        # Get previous velocities for smoothing
-        prev_vel = self.previous_velocities[robot_name]
-        
-        # Base search movement: gentle rotation with small forward component
+        # DIRECT rotation without smoothing for immediate search response
         base_rotation = self.search_angular_vel * self.formation_directions.get(robot_name, 1.0)
         
-        # Smooth rotation to prevent jerky movement
-        vyaw = 0.7 * prev_vel['vyaw'] + 0.3 * base_rotation
+        # MAXIMUM rotation strength - no smoothing during search
+        vyaw = base_rotation * 3.0  # 3x stronger rotation for fast scanning
         
-        # Small forward movement to explore area (smooth)
-        vx = 0.05 * self.formation_directions.get(robot_name, 1.0)  # Reduced from 0.1
+        # Forward movement to explore area while searching
+        vx = 0.15 * self.formation_directions.get(robot_name, 1.0)  # Increased movement
         
         # No lateral movement during search
         vy = 0.0
@@ -228,7 +231,7 @@ class RangeBasedEncirclement:
         # Store for next iteration
         self.previous_velocities[robot_name] = {'vx': vx, 'vy': vy, 'vyaw': vyaw}
         
-        rospy.loginfo(f"{robot_name}: STABLE SEARCH MODE - vx={vx:.2f}, vy={vy:.2f}, vyaw={vyaw:.2f}")
+        rospy.loginfo(f"{robot_name}: MAXIMUM AGGRESSIVE SEARCH MODE - vx={vx:.2f}, vy={vy:.2f}, vyaw={vyaw:.2f}")
         
         return vx, vy, vyaw
     
@@ -296,6 +299,49 @@ class RangeBasedEncirclement:
         
         return vx, vy, vyaw
     
+    def detect_oscillation(self, robot_name, vx, vy, vyaw):
+        """Detect oscillation patterns in velocity commands"""
+        history = self.velocity_history[robot_name]
+        
+        # Add current velocities to history
+        history['vx'].append(vx)
+        history['vy'].append(vy)
+        history['vyaw'].append(vyaw)
+        
+        # Keep only recent history
+        if len(history['vx']) > self.max_history_length:
+            history['vx'] = history['vx'][-self.max_history_length:]
+            history['vy'] = history['vy'][-self.max_history_length:]
+            history['vyaw'] = history['vyaw'][-self.max_history_length:]
+        
+        # Check for oscillation patterns (alternating signs)
+        if len(history['vx']) >= 4:
+            vx_signs = [1 if v > 0 else (-1 if v < 0 else 0) for v in history['vx'][-4:]]
+            vy_signs = [1 if v > 0 else (-1 if v < 0 else 0) for v in history['vy'][-4:]]
+            
+            # Detect alternating pattern (oscillation)
+            vx_oscillating = vx_signs.count(1) >= 2 and vx_signs.count(-1) >= 2
+            vy_oscillating = vy_signs.count(1) >= 2 and vy_signs.count(-1) >= 2
+            
+            if vx_oscillating or vy_oscillating:
+                rospy.logwarn(f"{robot_name}: OSCILLATION DETECTED! Applying damping...")
+                return True
+        
+        return False
+    
+    def apply_oscillation_damping(self, robot_name, vx, vy, vyaw):
+        """Apply damping to reduce oscillation"""
+        # Reduce velocities when oscillation is detected
+        damping_factor = 0.3  # Reduce to 30% of original
+        
+        vx_damped = vx * damping_factor
+        vy_damped = vy * damping_factor
+        vyaw_damped = vyaw * damping_factor
+        
+        rospy.loginfo(f"{robot_name}: Applied oscillation damping - vx: {vx:.2f}->{vx_damped:.2f}, vy: {vy:.2f}->{vy_damped:.2f}")
+        
+        return vx_damped, vy_damped, vyaw_damped
+    
     def create_se2_command(self, vx, vy, vyaw):
         """Create SE2 command message"""
         cmd = SE2Command()
@@ -317,9 +363,8 @@ class RangeBasedEncirclement:
         
         rospy.logdebug("Control callback triggered")
         
-        # Update formation angle for circular motion
-        current_time = rospy.Time.now().to_sec()
-        self.formation_angle = self.angular_speed * current_time
+        # Formation angle is static for stable encirclement
+        # No need to update dynamically - use fixed formation positions
         
         # Calculate control for agent 1 (drone0) - ENCIRCLEMENT AGENT
         agent1_target_range, agent1_target_angle = self.find_target_in_laser_scan(
@@ -364,11 +409,16 @@ class RangeBasedEncirclement:
             # Target not visible - use search behavior
             if self.should_search_for_target('drone0'):
                 vx1, vy1, vyaw1 = self.calculate_search_behavior('drone0')
-                rospy.loginfo("Drone0: Target not found - ACTIVATING SEARCH MODE")
+                rospy.loginfo("Drone0: Target not found - ACTIVATING AGGRESSIVE SEARCH MODE")
             else:
-                vx1, vy1, vyaw1 = 0.0, 0.0, 0.0
-                search_time = (rospy.Time.now() - self.last_target_seen['drone0']).to_sec()
-                rospy.loginfo(f"Drone0: Target not found but search timeout not reached ({search_time:.1f}s < 3.0s)")
+                # SAFETY: Force search if no target and no other agent visible
+                if agent1_other_range is None:
+                    rospy.logwarn("Drone0: No drones visible at all - FORCING SEARCH MODE")
+                    vx1, vy1, vyaw1 = self.calculate_search_behavior('drone0')
+                else:
+                    vx1, vy1, vyaw1 = 0.0, 0.0, 0.0
+                    search_time = (rospy.Time.now() - self.last_target_seen['drone0']).to_sec()
+                    rospy.loginfo(f"Drone0: Target not found but search timeout not reached ({search_time:.1f}s < 0.5s)")
         
         if agent2_target_range is not None:
             # Target visible - use encirclement control
@@ -381,15 +431,29 @@ class RangeBasedEncirclement:
             # Target not visible - use search behavior
             if self.should_search_for_target('drone1'):
                 vx2, vy2, vyaw2 = self.calculate_search_behavior('drone1')
-                rospy.loginfo("Drone1: Target not found - ACTIVATING SEARCH MODE")
+                rospy.loginfo("Drone1: Target not found - ACTIVATING AGGRESSIVE SEARCH MODE")
             else:
-                vx2, vy2, vyaw2 = 0.0, 0.0, 0.0
-                search_time = (rospy.Time.now() - self.last_target_seen['drone1']).to_sec()
-                rospy.loginfo(f"Drone1: Target not found but search timeout not reached ({search_time:.1f}s < 3.0s)")
+                # SAFETY: Force search if no target and no other agent visible
+                if agent2_other_range is None:
+                    rospy.logwarn("Drone1: No drones visible at all - FORCING SEARCH MODE")
+                    vx2, vy2, vyaw2 = self.calculate_search_behavior('drone1')
+                else:
+                    vx2, vy2, vyaw2 = 0.0, 0.0, 0.0
+                    search_time = (rospy.Time.now() - self.last_target_seen['drone1']).to_sec()
+                    rospy.loginfo(f"Drone1: Target not found but search timeout not reached ({search_time:.1f}s < 0.5s)")
         
         # Create and publish commands for ENCIRCLEMENT AGENTS ONLY
         cmd1 = self.create_se2_command(vx1, vy1, vyaw1)
         cmd2 = self.create_se2_command(vx2, vy2, vyaw2)
+        
+        # OSCILLATION DETECTION AND DAMPING
+        if self.detect_oscillation('drone0', vx1, vy1, vyaw1):
+            vx1_damped, vy1_damped, vyaw1_damped = self.apply_oscillation_damping('drone0', vx1, vy1, vyaw1)
+            cmd1 = self.create_se2_command(vx1_damped, vy1_damped, vyaw1_damped)
+        
+        if self.detect_oscillation('drone1', vx2, vy2, vyaw2):
+            vx2_damped, vy2_damped, vyaw2_damped = self.apply_oscillation_damping('drone1', vx2, vy2, vyaw2)
+            cmd2 = self.create_se2_command(vx2_damped, vy2_damped, vyaw2_damped)
         
         # SAFETY: Force movement if both drones have zero velocity (stuck situation)
         if abs(vx1) < 0.01 and abs(vy1) < 0.01 and abs(vyaw1) < 0.01:
