@@ -488,6 +488,7 @@ class RangeBasedEncirclement:
             
         if self.debug_counter % 20 == 0:
             rospy.loginfo("=== ENCIRCLEMENT AGENTS STATUS (drone0 & drone1 only) ===")
+            rospy.loginfo(f"Target distances - Drone0: {self.target_distances['drone0']:.1f}m, Drone1: {self.target_distances['drone1']:.1f}m")
             rospy.loginfo(f"Formation angle: {math.degrees(self.formation_angle):.1f}°")
             
             # Agent 1 status (drone0)
